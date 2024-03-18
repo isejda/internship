@@ -1,3 +1,19 @@
+<?php
+include "include/conn.php";
+
+$query_user_data = "SELECT *
+                    FROM users
+                    WHERE id = '".mysqli_real_escape_string($conn, $_SESSION['id'])."' ";
+
+$result_user_data = mysqli_query($conn, $query_user_data);
+
+if(!$result_user_data){
+    echo "Error";
+    exit;
+}
+$data = mysqli_fetch_assoc($result_user_data);
+?>
+
 <div id="wrapper">
 
     <nav class="navbar-default navbar-static-side" role="navigation">

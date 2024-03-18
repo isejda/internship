@@ -2,7 +2,6 @@
 session_start();
 
 include "include/validation.php";
-
 include "include/conn.php";
 
 $query_user_data = "SELECT *
@@ -81,12 +80,12 @@ include "include/menu.php";
                             <div class="ibox-content profile-content">
                                 <h4><strong><?= $data['name'] . ' ' . $data['lastname']?></strong></h4>
                                 <p><i class="fa fa-envelope"></i><?= " " . $data['email']?> </p>
+
                                 <h5>
-                                    About me
+                                    Update your profile
                                 </h5>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitat.
-                                </p>
+                               <a href="updateprofile.php"> <i class="fa fa-edit" style="font-size:24px"></i></a>
+
                                 <div class="row m-t-lg">
                                     <div class="col-md-4">
                                         <span class="bar">5,3,9,6,5,9,7,3,5,2</span>

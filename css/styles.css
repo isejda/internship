@@ -1,0 +1,12 @@
+.error{
+    font-size: 13px;
+    font-weight: 600;
+    font-family: monospace;
+    font-style: italic;
+    color: #943939; !important;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+    color: #dc3545;
+}

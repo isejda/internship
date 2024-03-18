@@ -1,3 +1,22 @@
+<?php
+session_start();
+require_once "include/conn.php";
+
+if (!isset($_SESSION['email']) && !isset($_SESSION['id'])) {
+    header("Location: login.php");
+} else if (empty($_SESSION['email']) || empty($_SESSION['id'])){
+    header("Location: login.php");
+}
+
+$validationErrors = ['email' => '', 'name' => '', 'lastname' => '', 'password' => '',
+    'confirmPassword' => '', 'agree-term' => '', 'signup' => '', 'birthday' => ''];
+if (isset($_SESSION['register_form_validations'])) {
+    $validationErrors = array_merge($validationErrors, $_SESSION['register_form_validations']);
+    unset($_SESSION['register_form_validations']);
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -8,11 +27,10 @@
 
     <title>INSPINIA | Contacts</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <?php
+    include "include/header.php";
+    ?>
 
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
 
 </head>
 
@@ -27,341 +45,113 @@ include "include/menu.php";
                         <li>
                             <a href="index.html">Home</a>
                         </li>
-                        <li>
-                            App Views
-                        </li>
+
                         <li class="active">
-                            <strong>Contacts</strong>
+                            <strong>Clients</strong>
                         </li>
                     </ol>
                 </div>
             </div>
         <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a2.jpg">
-                            <div class="m-t-xs font-bold">Graphics designer</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>John Smith</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a1.jpg">
-                            <div class="m-t-xs font-bold">CEO</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Alex Johnatan</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a3.jpg">
-                            <div class="m-t-xs font-bold">Marketing manager</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Monica Smith</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a4.jpg">
-                            <div class="m-t-xs font-bold">Sales manager</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Michael Zimber</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a5.jpg">
-                            <div class="m-t-xs font-bold">Graphics designer</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Sandra Smith</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a6.jpg">
-                            <div class="m-t-xs font-bold">Graphics designer</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Janet Carton</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a1.jpg">
-                            <div class="m-t-xs font-bold">CEO</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Alex Johnatan</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a2.jpg">
-                            <div class="m-t-xs font-bold">Graphics designer</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>John Smith</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a3.jpg">
-                            <div class="m-t-xs font-bold">Marketing manager</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Monica Smith</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a4.jpg">
-                            <div class="m-t-xs font-bold">Sales manager</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Michael Zimber</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a5.jpg">
-                            <div class="m-t-xs font-bold">Graphics designer</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Sandra Smith</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a6.jpg">
-                            <div class="m-t-xs font-bold">Graphics designer</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>Janet Carton</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                        </a>
 
-                </div>
+            <div class="ibox-title">
+                <h5>Clients</h5>
             </div>
+            <?php
+            $sql = "SELECT * FROM users";
+            $result = $conn->query($sql);
+            if($result){
+                while ($row = mysqli_fetch_assoc($result)){
+                    if($row['role'] === 'user'){
+                        $id = $row['id'];
+                        $name = $row['name'];
+                        $lastname = $row['lastname'];
+                        $email = $row['email'];
+                        $birthday = $row['birthday'];
+                        $picture = $row['picture'];
+                        $role = $row['role'];
+                        echo '
             <div class="col-lg-4">
                 <div class="contact-box">
-                    <a href="profile.php">
+                    <a href="update.php?id='.$id.'">
                     <div class="col-sm-4">
                         <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a1.jpg">
-                            <div class="m-t-xs font-bold">CEO</div>
+                            <img alt="image" class="img-circle m-t-xs img-responsive" src="'.$picture.'">
                         </div>
                     </div>
                     <div class="col-sm-8">
-                        <h3><strong>Alex Johnatan</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
+                        <h3><strong> '.$name.' '.$lastname.'</strong></h3>
+                        <p><i class="fa fa-envelope"></i>  '.$email.' </p>
                         <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                            Birthday <br>
+                            '.$birthday.'<br>
                         </address>
                     </div>
                     <div class="clearfix"></div>
-                    </a>
+                        </a>
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="contact-box">
-                    <a href="profile.php">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="img/a2.jpg">
-                            <div class="m-t-xs font-bold">Graphics designer</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>John Smith</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> Riviera State 32/106</p>
-                        <address>
-                            <strong>Twitter, Inc.</strong><br>
-                            795 Folsom Ave, Suite 600<br>
-                            San Francisco, CA 94107<br>
-                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                        </address>
-                    </div>
-                    <div class="clearfix"></div>
-                    </a>
-                </div>
-            </div>
+            </div>';
+                    }
+
+
+                };
+            }
+            ?>
+
+
+
         </div>
+            <div class="row">
+
+                <div class="ibox-title">
+                    <h5>Admins</h5>
+                </div>
+                <?php
+                $sql = "SELECT * FROM users";
+                $result = $conn->query($sql);
+                if($result){
+                    while ($row = mysqli_fetch_assoc($result)){
+                        if($row['role'] === 'admin'){
+                            $id = $row['id'];
+                            $name = $row['name'];
+                            $lastname = $row['lastname'];
+                            $email = $row['email'];
+                            $birthday = $row['birthday'];
+                            $picture = $row['picture'];
+                            $role = $row['role'];
+                            echo '
+            <div class="col-lg-4">
+                <div class="contact-box">
+                    <a href="update.php?id='.$id.'">
+                    <div class="col-sm-4">
+                        <div class="text-center">
+                            <img alt="image" class="img-circle m-t-xs img-responsive" src="'.$picture.'">
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <h3><strong> '.$name.' '.$lastname.'</strong></h3>
+                        <p><i class="fa fa-envelope"></i>  '.$email.' </p>
+                        <address>
+                            You can only view admins data<br>
+                            but you cant modify them<br>
+                        </address>
+                    </div>
+                    <div class="clearfix"></div>
+                        </a>
+                </div>
+            </div>';
+                        }
+
+
+                    };
+                }
+                ?>
+
+
+
+            </div>
+
         </div>
         <div class="footer">
             <div class="pull-right">
