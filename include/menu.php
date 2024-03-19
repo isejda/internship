@@ -1,35 +1,33 @@
 <?php
-include "include/conn.php";
-
-$query_user_data = "SELECT *
-                    FROM users
-                    WHERE id = '".mysqli_real_escape_string($conn, $_SESSION['id'])."' ";
-
-$result_user_data = mysqli_query($conn, $query_user_data);
-
-if(!$result_user_data){
-    echo "Error";
-    exit;
-}
-$data = mysqli_fetch_assoc($result_user_data);
+include 'getdata.php';
 ?>
-
 <div id="wrapper">
-
     <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-                    <div class="dropdown profile-element"> <span>
-                            <img alt="image" class="img-circle" src="<?=$data['picture']?>" style="width: 80px; height: 80px;" />
-                             </span>
+                    <div class="dropdown profile-element">
+                        <span>
+                            <img alt="image" class="img-circle" src="<?php echo isset($_SESSION['picture']) ? $_SESSION['picture'] : ''; ?>" style="width: 80px; height: 80px;" />
+                        </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"><?= $data['name'] . ' ' . $data['lastname']?></strong>
-                             </span> <span class="text-muted text-xs block"><?= $data['role']?> <b class="caret"></b></span> </span> </a>
+                            <span class="clear">
+                                <span class="block m-t-xs">
+                                    <strong class="font-bold"><?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ''; ?><?php echo isset($_SESSION['lastname']) ? ' ' . $_SESSION['lastname'] : ''; ?></strong>
+                                </span>
+                                <!-- Add user role here if available -->
+                                <?php if(isset($_SESSION['role'])): ?>
+                                    <span class="text-muted text-xs block"><?php echo $_SESSION['role']; ?> <b class="caret"></b></span>
+                                <?php endif; ?>
+                            </span>
+                        </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a href="profile.php">Profile</a></li>
-                            <li><a href="contacts.html">Contacts</a></li>
+                            <?php if($_SESSION['role'] === 'admin'){ ?>
+                            <li><a href="contacts.php">Contacts</a></li>
+
                             <li><a href="mailbox.html">Mailbox</a></li>
+                            <?php } ?>
                             <li class="divider"></li>
                             <li><a href="logout.php">Logout</a></li>
                         </ul>
@@ -38,6 +36,8 @@ $data = mysqli_fetch_assoc($result_user_data);
                         IN+
                     </div>
                 </li>
+                <?php if($_SESSION['role'] === 'asgje'): ?>
+
                 <li>
                     <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
@@ -94,7 +94,7 @@ $data = mysqli_fetch_assoc($result_user_data);
                 <li class="active">
                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">App Views</span>  <span class="pull-right label label-primary">SPECIAL</span></a>
                     <ul class="nav nav-second-level">
-                        <li><a href="contacts.html">Contacts</a></li>
+                        <li><a href="contacts.php">Contacts</a></li>
                         <li class="active"><a href="profile.php">Profile</a></li>
                         <li><a href="profile_2.html">Profile v.2</a></li>
                         <li><a href="contacts_2.html">Contacts v.2</a></li>
@@ -247,6 +247,7 @@ $data = mysqli_fetch_assoc($result_user_data);
                 <li class="special_link">
                     <a href="package.html"><i class="fa fa-database"></i> <span class="nav-label">Package</span></a>
                 </li>
+                <?php endif; ?>
             </ul>
 
         </div>
@@ -365,7 +366,7 @@ $data = mysqli_fetch_assoc($result_user_data);
 
 
                     <li>
-                        <a href="login.php">
+                        <a href="logout.php">
                             <i class="fa fa-sign-out"></i> Log out
                         </a>
                     </li>

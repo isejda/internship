@@ -9,6 +9,13 @@ if (!isset($_SESSION['email']) && !isset($_SESSION['id'])) {
 
 include "include/conn.php";
 //access the parameter from the url
+if (!isset($_GET['id'])) {
+    // Redirect or handle error if ID parameter is not provided
+    // For example:
+    header("Location: 404.html");
+    exit;
+}
+
 
 $id = $_GET['id'];
 
@@ -18,8 +25,10 @@ $query_user_data = "SELECT *
 
 $result_user_data = mysqli_query($conn, $query_user_data);
 
-if (!$result_user_data) {
-    echo "Error";
+if (!$result_user_data || mysqli_num_rows($result_user_data) == 0) {
+    // Handle error if user data is not found
+    // For example:
+    header("Location: 404.html");
     exit;
 }
 $data = mysqli_fetch_assoc($result_user_data);
@@ -148,8 +157,23 @@ include "include/menu.php";
                             <div class="mb-3">
                                 <br>
                                 <label class="small mb-1" for="role">Role</label>
-                                <input class="form-control m-t" id="role" name = 'role' type="text" value="<?= $data['role'] ?>" readonly>
+                                <select class="form-control" name="role" id="role">
+                                    <?php
+                                    if($data['role'] === 'admin'){
+                                        echo'                                    
+                                    <option value="admin" selected>Admin</option>
+                                    <option value="user">User</option>
+                                        ';
+                                    }
+                                    else{
+                                    echo'                                    
+                                    <option value="admin">Admin</option>
+                                    <option value="user" selected>User</option>
+                                        ';
+                                    }
+                                    ?>
 
+                                </select>
                             </div>
 
                             <!-- Form Group (birthday)-->

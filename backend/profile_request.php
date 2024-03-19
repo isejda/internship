@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include "include/conn.php";
+include "../include/conn.php";
 
 if(isset($_POST['edit']))
 {
@@ -18,6 +18,7 @@ if(isset($_POST['edit']))
     $password = $conn->escape_string($_POST['password']);
     $confirmPassword = $conn->escape_string($_POST['confirmPassword']);
     $birthday = $conn->escape_string($_POST['birthday']);
+    $selectedRole = $_POST['role'];
     $alphanumericRegex = '/^[a-zA-Z]+$/';
     $dob = new DateTime($birthday);
     $now = new DateTime();
@@ -58,6 +59,8 @@ if(isset($_POST['edit']))
         else{
             $validationErrors['email'] = "Invalid email format";
         }
+
+        $update .= ", role ='$selectedRole'";
 
         if ($age >= 18) {
             $update .= ", birthday ='$birthday'";
@@ -109,11 +112,11 @@ if(isset($_POST['edit']))
         if (!empty($validationErrors)) {
             $_SESSION['profile_form_validations'] = $validationErrors;
             if($num == 1){
-                header('Location: profile.php');
+                header('Location: ../profile.php');
                 exit;
             }
             else{
-                header('Location: profile.php');
+                header('Location: ../profile.php');
                 exit;
             }
 
@@ -125,22 +128,22 @@ if(isset($_POST['edit']))
         if($sql2)
         {
             if($num == 1){
-                header('Location: display.php');
+                header('Location: ../contacts.php');
             }
             else{
-                header('Location: profile.php');
+                header('Location: ../profile.php');
             }
         }
         else
         {
             /*sorry your profile is not update*/
-            header('location:logout.php');
+            header('location:../logout.php');
         }
     }
     else
     {
         /*sorry your id is not match*/
-        header('location:logout.php');
+        header('location:../logout.php');
     }
 }
 ?>
