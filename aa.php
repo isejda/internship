@@ -20,7 +20,7 @@
         <h2>Contacts</h2>
         <ol class="breadcrumb">
             <li>
-                <a href="index.html">Home</a>
+                <a href="home.php">Home</a>
             </li>
             <li class="active">
                 <strong>Clients</strong>

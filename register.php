@@ -90,6 +90,7 @@ if(isset($_SESSION['id'])){
                         <?php echo $validationErrors['agree-term']; ?>
                     </div>
                 </div>
+                <input type="hidden" name="page" value="register">
                 <input type="submit" name="signup" id="signup" class="btn btn-primary block full-width m-b" value="Register"/>
                 <div class="error">
                     <?php echo $validationErrors['signup']; ?>

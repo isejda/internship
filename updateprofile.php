@@ -86,17 +86,16 @@ include "include/menu.php";
                                     <div class="card-body text-center">
                                         <!-- Profile picture image-->
                                         <label for="picture" class="upload-file">
-                                            <img class="img-account-profile rounded-circle mb-2 photo-src" src="<?=$data['picture']?>" alt="" style="width: 300px; height: 300px; object-fit: cover">
+                                            <img id="profile-pic" class="img-account-profile rounded-circle mb-2 photo-src" src="inspina/<?=$data['picture']?>" alt="" style="width: 300px; height: 300px; object-fit: cover">
                                             <br><br>
                                             <!-- Profile picture help block-->
-                                            <input type="file" id="picture" name="picture" class="form-control m-t" accept="image/*">
+                                            <input type="file" id="picture" name="picture" class="form-control m-t" accept="image/*" onchange="previewImage(event)">
                                         </label>
                                         <br>
                                         <div class="error">
                                             <?php echo $validationErrors['picture']; ?>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="col-xl-8">
@@ -173,6 +172,7 @@ include "include/menu.php";
                                                     </div>
                                                 </div>
                                             </div>
+                                        <input type="hidden" name="page" value="updateprofile">
                                             <!-- Save changes button-->
                                             <input type="submit" name="edit" id="edit" class="btn btn-primary m-t" value="Save"/>
                                     </div>
@@ -184,29 +184,25 @@ include "include/menu.php";
 
 
             </div>
-            <div class="footer">
-                <div class="pull-right">
-                    10GB of <strong>250GB</strong> Free.
-                </div>
-                <div>
-                    <strong>Copyright</strong> Example Company &copy; 2014-2017
-                </div>
-            </div>
+<?php
+include "include/footer.php";
+include "include/scripts.php";
+?>
+<script>
+    function previewImage(event) {
+        var input = event.target;
+        var reader = new FileReader();
 
-        </div>
-        </div>
+        reader.onload = function() {
+            var dataURL = reader.result;
+            var profilePic = document.getElementById('profile-pic');
+            profilePic.src = dataURL;
+        };
 
-    <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+        reader.readAsDataURL(input.files[0]);
+    }
 
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-
-
+</script>
 </body>
 
 </html>

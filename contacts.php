@@ -1,12 +1,11 @@
 <?php
 session_start();
-require_once "include/conn.php";
+$id =  $_SESSION['id'];
+//print_r($id);
+//exit;
 
-if (!isset($_SESSION['email']) && !isset($_SESSION['id'])) {
-    header("Location: login.php");
-} else if (empty($_SESSION['email']) || empty($_SESSION['id'])){
-    header("Location: login.php");
-}
+require_once "include/conn.php";
+include "include/validation.php";
 
 $validationErrors = ['email' => '', 'name' => '', 'lastname' => '', 'password' => '',
     'confirmPassword' => '', 'agree-term' => '', 'signup' => '', 'birthday' => ''];
@@ -43,7 +42,7 @@ include "include/menu.php";
                     <h2>Contacts</h2>
                     <ol class="breadcrumb">
                         <li>
-                            <a href="index.html">Home</a>
+                            <a href="home.php">Home</a>
                         </li>
 
                         <li class="active">
@@ -71,7 +70,7 @@ include "include/menu.php";
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form method="POST" class="profile-form" id="profile-form" enctype='multipart/form-data'  action="reg_request.php">
+                            <form method="POST" class="profile-form" id="profile-form" enctype='multipart/form-data'  action="backend/reg_request.php">
 
                                 <div class="modal-body">
                                     <div class="form-group">
@@ -107,20 +106,13 @@ include "include/menu.php";
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="small mb-1" for="birthday">Role</label>
-                                        <select class="form-control" name="role" id="role">
-                                            <option value="admin">Admin</option>
-                                            <option value="user">User</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
                                         <label class="small mb-1" for="password">New password</label>
                                         <input class="form-control" id="password" type="password" name="password" placeholder="Enter your new password" value="">
                                         <div class="errorMessage">
                                             <?php echo $validationErrors['password']; ?>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="page" value="display">
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="confirmPassword">Confirm new password</label>
@@ -142,29 +134,6 @@ include "include/menu.php";
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" name="insertdata" id="insertdata" class="btn btn-primary">Save Data</button>
-
-                                    <script>
-                                        document.getElementById('insertdata').addEventListener('click', function(event) {
-                                            event.preventDefault();
-                                            Swal.fire({
-                                                title: 'Are you sure?',
-                                                text: "You are about to save the data!",
-                                                icon: 'warning',
-                                                showCancelButton: true,
-                                                confirmButtonColor: '#3085d6',
-                                                cancelButtonColor: '#d33',
-                                                confirmButtonText: 'Yes, save it!'
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    document.querySelector('form').submit();
-                                                }
-                                            });
-                                        });
-                                        function redirectToDisplayPage() {
-                                            window.location.href = "display.php";
-                                        }
-                                    </script>
-
                                 </div>
                             </form>
                         </div>
@@ -192,7 +161,7 @@ include "include/menu.php";
                     <a href="update.php?id='.$id.'">
                     <div class="col-sm-4">
                         <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="'.$picture.'">
+                            <img alt="image" class="img-circle m-t-xs img-responsive" src="inspina/'.$picture.'">
                         </div>
                     </div>
                     <div class="col-sm-8">
@@ -241,7 +210,7 @@ include "include/menu.php";
                     <a href="update.php?id='.$id.'">
                     <div class="col-sm-4">
                         <div class="text-center">
-                            <img alt="image" class="img-circle m-t-xs img-responsive" src="'.$picture.'">
+                            <img alt="image" class="img-circle m-t-xs img-responsive" src="inspina/'.$picture.'">
                         </div>
                     </div>
                     <div class="col-sm-8">
@@ -268,34 +237,13 @@ include "include/menu.php";
             </div>
 
         </div>
-        <div class="footer">
-            <div class="pull-right">
-                10GB of <strong>250GB</strong> Free.
-            </div>
-            <div>
-                <strong>Copyright</strong> Example Company &copy; 2014-2017
-            </div>
-        </div>
+<?php
+include "include/footer.php";
+include "include/scripts.php";
 
-        </div>
-        </div>
+?>
 
-    <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-
-<!-- Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </body>
 
 </html>

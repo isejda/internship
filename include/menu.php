@@ -1,5 +1,5 @@
 <?php
-include 'getdata.php';
+include 'include/getdata.php';
 ?>
 <div id="wrapper">
     <nav class="navbar-default navbar-static-side" role="navigation">
@@ -8,7 +8,7 @@ include 'getdata.php';
                 <li class="nav-header">
                     <div class="dropdown profile-element">
                         <span>
-                            <img alt="image" class="img-circle" src="<?php echo isset($_SESSION['picture']) ? $_SESSION['picture'] : ''; ?>" style="width: 80px; height: 80px;" />
+                            <img alt="image" class="img-circle" src="inspina/<?php echo isset($_SESSION['picture']) ? $_SESSION['picture'] : ''; ?>" style="width: 80px; height: 80px;" />
                         </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear">
@@ -23,11 +23,6 @@ include 'getdata.php';
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a href="profile.php">Profile</a></li>
-                            <?php if($_SESSION['role'] === 'admin'){ ?>
-                            <li><a href="contacts.php">Contacts</a></li>
-
-                            <li><a href="mailbox.html">Mailbox</a></li>
-                            <?php } ?>
                             <li class="divider"></li>
                             <li><a href="logout.php">Logout</a></li>
                         </ul>
@@ -36,6 +31,18 @@ include 'getdata.php';
                         IN+
                     </div>
                 </li>
+
+                <li>
+                    <a href="home.php"><i class="fa fa-home" style="font-size:20px"></i><span class="nav-label">Home</span></a>
+                </li>
+
+                <?php if($_SESSION['role'] === 'admin'){ ?>
+                <li>
+                    <a href="contacts.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashbord</span></a>
+                </li>
+                <?php } ?>
+
+
                 <?php if($_SESSION['role'] === 'asgje'): ?>
 
                 <li>
@@ -48,6 +55,7 @@ include 'getdata.php';
                         <li><a href="dashboard_5.html">Dashboard v.5 </a></li>
                     </ul>
                 </li>
+
                 <li>
                     <a href="layouts.html"><i class="fa fa-diamond"></i> <span class="nav-label">Layouts</span></a>
                 </li>

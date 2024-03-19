@@ -10,7 +10,7 @@ if(isset($_GET['deleteid'])){
     $result = $conn->query($sql);
     if($result){
 //        echo "deleted succesfully";
-        header('location:display.php');
+        header('location:../contacts.php');
     }
     else{
         die($conn->error);

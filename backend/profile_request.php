@@ -5,12 +5,16 @@ include "../include/conn.php";
 
 if(isset($_POST['edit']))
 {
-    $id = $_POST['id'];
-    $num = 1;
-    if (!$id) {
+    $page = $_POST['page'];
+    if($page === "updateprofile"){
         $id = $_SESSION['id'];
-        $num = 2;
     }
+    else if($page === "updateusers"){
+        $id = $_POST['id'];
+    }
+/*    print_r($id);
+    exit;*/
+
 
     $name = $conn->escape_string($_POST['name']);
     $lastname = $conn->escape_string($_POST['lastname']);
@@ -35,7 +39,11 @@ if(isset($_POST['edit']))
     $row = mysqli_fetch_assoc($sql);
     $res= $row['id'];
 
-    if($res === $id) {
+/*    print_r($id);
+    print_r($res);
+    exit;*/
+    if($res == $id) {
+
         $update = "UPDATE users 
                     SET  ";
 
@@ -72,7 +80,7 @@ if(isset($_POST['edit']))
         if(!empty($password) && (!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8)) {
             $validationErrors['password'] = "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.";
         }
-        if (!empty($password) && $password == $confirmPassword &&
+        else if (!empty($password) && $password == $confirmPassword &&
             ($uppercase && $lowercase && $number && $specialChars && strlen($password) > 8)) {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $update .= ", password = '$hashed_password'";
@@ -81,14 +89,14 @@ if(isset($_POST['edit']))
         if ($password != $confirmPassword){
             $validationErrors['confirmPassword'] = "Password does not match";
         }
-
-        //print_r($_FILES);
-        //exit;
+//
+//        print_r($_FILES);
+//        exit;
         if ($_FILES['picture']['error'] === UPLOAD_ERR_OK) {
             $picture_tmp_name = $_FILES['picture']['tmp_name'];
             $picture_name = $_FILES['picture']['name'];
 
-            $upload_directory = "storage/photos/";
+            $upload_directory = "../storage/photos/";
             $destination = $upload_directory . $picture_name;
             $fileType = pathinfo($destination, PATHINFO_EXTENSION);
             $allowTypes = array('jpg', 'png', 'jpeg', 'gif');
@@ -105,34 +113,37 @@ if(isset($_POST['edit']))
         }
 
 
-        $update .= " WHERE id = '$id'";
 //        print_r($validationErrors);
 //        exit;
 
         if (!empty($validationErrors)) {
             $_SESSION['profile_form_validations'] = $validationErrors;
-            if($num == 1){
+            if($page === "updateprofile"){
                 header('Location: ../profile.php');
                 exit;
             }
-            else{
-                header('Location: ../profile.php');
+            else if($page === "updateusers"){
+                header("Location: ../update.php?id=$id");
                 exit;
             }
-
         }
+
+        $update .= " WHERE id = '$id'";
 
 //        print_r($update);
 //        exit;
         $sql2=mysqli_query($conn,$update);
         if($sql2)
         {
-            if($num == 1){
-                header('Location: ../contacts.php');
-            }
-            else{
+            if($page === "updateprofile"){
                 header('Location: ../profile.php');
+                exit;
             }
+            else if($page === "updateusers"){
+                header("Location: ../contacts.php");
+                exit;
+            }
+
         }
         else
         {

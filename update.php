@@ -18,6 +18,8 @@ if (!isset($_GET['id'])) {
 
 
 $id = $_GET['id'];
+//print_r($id);
+//exit;
 
 $query_user_data = "SELECT *
                     FROM users
@@ -27,7 +29,6 @@ $result_user_data = mysqli_query($conn, $query_user_data);
 
 if (!$result_user_data || mysqli_num_rows($result_user_data) == 0) {
     // Handle error if user data is not found
-    // For example:
     header("Location: 404.html");
     exit;
 }
@@ -74,7 +75,7 @@ include "include/menu.php";
             <h2>Update Profile</h2>
             <ol class="breadcrumb">
                 <li>
-                    <a href="index.html">Home</a>
+                    <a href="home.php">Home</a>
                 </li>
                 <li>
                     <a href="contacts.php">Clients</a>
@@ -99,24 +100,23 @@ include "include/menu.php";
         <form method="POST" class="profile-form" id="profile-form" enctype='multipart/form-data' action="backend/profile_request.php">
             <br><br><br>
             <div class="row">
+
                 <div class="col-xl-4">
-                    <!-- Profile picture card-->
                     <div class="card mb-4 mb-xl-0">
                         <h3 class="font-bold">Profile Picture</h3>
                         <div class="card-body text-center">
                             <!-- Profile picture image-->
                             <label for="picture" class="upload-file">
-                                <img class="img-account-profile rounded-circle mb-2 photo-src" src="<?=$data['picture']?>" alt="" style="width: 300px; height: 300px; object-fit: cover">
+                                <img id="profile-pic" class="img-account-profile rounded-circle mb-2 photo-src" src="inspina/<?=$data['picture']?>" alt="" style="width: 300px; height: 300px; object-fit: cover">
                                 <br><br>
                                 <!-- Profile picture help block-->
-                                <input type="file" id="picture" name="picture" class="form-control m-t" accept="image/*">
+                                <input type="file" id="picture" name="picture" class="form-control m-t" accept="image/*" onchange="previewImage(event)">
                             </label>
                             <br>
                             <div class="error">
                                 <?php echo $validationErrors['picture']; ?>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="col-xl-8">
@@ -207,41 +207,62 @@ include "include/menu.php";
                                         <?php echo $validationErrors['confirmPassword']; ?>
                                     </div>
                                 </div>
+                                <input type="hidden" name="page" value="updateusers">
                                 <input type="hidden" name="id" id="id" value="<?php echo $_GET['id']?>">
 
                             </div>
-                            <!-- Save changes button-->
+
                             <input type="submit" name="edit" id="edit" class="btn btn-primary m-t" value="Save"/>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
+        <br>
     </div>
-
-
-</div>
-<div class="footer">
-    <div class="pull-right">
-        10GB of <strong>250GB</strong> Free.
-    </div>
-    <div>
-        <strong>Copyright</strong> Example Company &copy; 2014-2017
-    </div>
+    <button class="btn btn-danger deleteBtn" data-id=" <?php echo $_GET['id']; ?>" style="margin-left: 224px">Delete</button>
 </div>
 
-</div>
-</div>
+    <script>
+        const deleteButtons = document.querySelectorAll('.deleteBtn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = button.getAttribute('data-id');
 
-<!-- Mainly scripts -->
-<script src="js/jquery-3.1.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You will not be able to recover this user!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'backend/delete.php?deleteid=' + userId;
+                    }
+                });
+            });
+        });
 
-<!-- Custom and plugin javascript -->
-<script src="js/inspinia.js"></script>
-<script src="js/plugins/pace/pace.min.js"></script>
+            function previewImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function() {
+            var dataURL = reader.result;
+            var profilePic = document.getElementById('profile-pic');
+            profilePic.src = dataURL;
+        };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
+<?php
+include "include/footer.php";
+include "include/scripts.php";
+
+?>
 
 
 </body>
