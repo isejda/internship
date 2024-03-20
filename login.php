@@ -1,8 +1,11 @@
 <?php
 session_start();
 $validationErrors = ['email' => '', 'password' => ''];
+$oldData = ['email' => '', 'password' => ''];
+
 if (isset($_SESSION['login_form_validations'])) {
-    $validationErrors = array_merge($validationErrors, $_SESSION['login_form_validations']);
+    $oldData = array_merge($oldData, $_SESSION['login_form_validations']['data']);
+    $validationErrors = array_merge($validationErrors, $_SESSION['login_form_validations']['errors']);
     unset($_SESSION['login_form_validations']);
 }
 
@@ -40,7 +43,7 @@ if(isset($_SESSION['id'])){
             <p>Login in now </p>
             <form method="POST" class="register-form" id="login-form" action="backend/log_request.php">
                 <div class="form-group">
-                    <input type="email" name="email" id="email" class="form-control <?php echo !empty($validationErrors['email']) ? 'is-invalid' : ''; ?>" placeholder="Your Email" required="">
+                    <input type="email" name="email" id="email" class="form-control <?php echo !empty($validationErrors['email']) ? 'is-invalid' : ''; ?>" placeholder="Your Email" required="" value="<?php echo $oldData['email']; ?>">
                     <span class="error">
                         <?php echo $validationErrors['email']; ?>
                     </span>

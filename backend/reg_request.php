@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $age = $now->diff($dob)->y;
     $alphanumericRegex = '/^[a-zA-Z]+$/';
     $validationErrors = array();
+
     $check_value = isset($_POST['agree-term']);
 
     if (!$check_value) {
@@ -27,11 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $validationErrors['name'] = "Name is required";
     } elseif (!preg_match($alphanumericRegex, $name)) {
         $validationErrors['name'] = "Name must contain only letters";
+
     }
 
     if (empty($lastname)) {
         $validationErrors['lastname'] = "Last name is required";
-    } elseif (!preg_match($alphanumericRegex, $name)) {
+    } elseif (!preg_match($alphanumericRegex, $lastname)) {
         $validationErrors['lastname'] = "Last name must contain only letters";
     }
 
@@ -73,7 +75,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     if (!empty($validationErrors)) {
-        $_SESSION['register_form_validations'] = $validationErrors;
+        $_SESSION['register_form_validations'] = [
+            "errors" => $validationErrors,
+            "data" => $_POST,
+        ];
+
         if($page === "register"){
             header('Location: ../register.php');
         }
@@ -89,7 +95,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         $validationErrors['email'] = "Email already exists!";
-        $_SESSION['register_form_validations'] = $validationErrors;
+        $_SESSION['register_form_validations'] = [
+            "errors" => $validationErrors,
+            "data" => $_POST,
+        ];
         if($page === "register"){
             header('Location: ../register.php');
         }
@@ -113,7 +122,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     } else {
         $validationErrors['signup'] = "Problem tek te dhenat";
-        $_SESSION['register_form_validations'] = $validationErrors;
+        $_SESSION['register_form_validations'] = [
+            "errors" => $validationErrors,
+            "data" => $_POST,
+        ];
         if($page === "register"){
             header('Location: ../register.php');
         }

@@ -20,7 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (!empty($validationErrors)) {
-        $_SESSION['login_form_validations'] = $validationErrors;
+        $_SESSION['login_form_validations'] = [
+            "errors" => $validationErrors,
+            "data" => $_POST,
+        ];
         header('Location: ../login.php');
         exit;
     }
@@ -37,7 +40,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!$result_check) {
         $validationErrors['email'] = "Internal Server Error";
-        $_SESSION['login_form_validations'] = $validationErrors;
+        $_SESSION['login_form_validations'] = [
+            "errors" => $validationErrors,
+            "data" => $_POST,
+        ];
         header('Location: ../login.php');
         exit;
 
@@ -45,7 +51,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (mysqli_num_rows($result_check) == 0) {
         $validationErrors['email'] = "User with this email does not exists on system";
-        $_SESSION['login_form_validations'] = $validationErrors;
+        $_SESSION['login_form_validations'] = [
+            "errors" => $validationErrors,
+            "data" => $_POST,
+        ];
         header('Location: ../login.php');
         exit;
     }
@@ -60,7 +69,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         } else {
             $validationErrors['password'] = "Incorrect password!";
-            $_SESSION['login_form_validations'] = $validationErrors;
+            $_SESSION['login_form_validations'] = [
+                "errors" => $validationErrors,
+                "data" => $_POST,
+            ];
             header('Location: ../login.php');
             exit;
         }

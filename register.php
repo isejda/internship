@@ -2,10 +2,15 @@
 session_start();
 $validationErrors = ['email' => '', 'name' => '', 'lastname' => '', 'password' => '',
     'confirmPassword' => '', 'agree-term' => '', 'signup' => '', 'birthday' => ''];
+$oldData = ['email' => '', 'name' => '', 'lastname' => '', 'password' => '',
+    'confirmPassword' => '', 'agree-term' => '', 'signup' => '', 'birthday' => ''];
+
 if (isset($_SESSION['register_form_validations'])) {
-    $validationErrors = array_merge($validationErrors, $_SESSION['register_form_validations']);
+    $oldData = array_merge($oldData, $_SESSION['register_form_validations']['data']);
+    $validationErrors = array_merge($validationErrors, $_SESSION['register_form_validations']['errors']);
     unset($_SESSION['register_form_validations']);
 }
+
 
 if(isset($_SESSION['id'])){
     header("Location:profile.php");
@@ -41,35 +46,35 @@ if(isset($_SESSION['id'])){
             <form role="form" method="POST" class="register-form" id="register-form" action="backend/reg_request.php">
 
                 <div class="form-group">
-                    <input type="text" class="form-control <?php echo !empty($validationErrors['name']) ? 'is-invalid' : ''; ?>" name="name" id="name" placeholder="Your First Name" required value="<?php echo !empty($_POST["name"]) ? $_POST["name"] : ''; ?>">
+                    <input type="text" class="form-control <?php echo !empty($validationErrors['name']) ? 'is-invalid' : ''; ?>" name="name" id="name" placeholder="Your First Name" required value="<?php echo $oldData['name']; ?>">
                     <span class="error">
                             <?php echo $validationErrors['name']; ?>
                     </span>
                 </div>
 
                 <div class="form-group">
-                    <input type="text" class="form-control <?php echo !empty($validationErrors['lastname']) ? 'is-invalid' : ''; ?>" name="lastname" id="lastname" placeholder="Your Last Name" required="">
+                    <input type="text" class="form-control <?php echo !empty($validationErrors['lastname']) ? 'is-invalid' : ''; ?>" name="lastname" id="lastname" placeholder="Your Last Name" required="" value="<?php echo $oldData['lastname']; ?>">
                     <span class="error">
                         <?php echo $validationErrors['lastname']; ?>
                     </span>
                 </div>
 
                 <div class="form-group">
-                    <input type="email" class="form-control <?php echo !empty($validationErrors['email']) ? 'is-invalid' : ''; ?>" name="email" id="email" placeholder="Your Email" required="">
+                    <input type="email" class="form-control <?php echo !empty($validationErrors['email']) ? 'is-invalid' : ''; ?>" name="email" id="email" placeholder="Your Email" required="" value="<?php echo $oldData['email']; ?>">
                     <span class="error">
                         <?php echo $validationErrors['email']; ?>
                     </span>
                 </div>
 
                 <div class="form-group">
-                    <input type="date" name="birthday" id="birthday" class="form-control <?php echo !empty($validationErrors['birthday']) ? 'is-invalid' : ''; ?>" required="">
+                    <input type="date" name="birthday" id="birthday" class="form-control <?php echo !empty($validationErrors['birthday']) ? 'is-invalid' : ''; ?>" required="" value="<?php echo $oldData['birthday']; ?>">
                     <span class="error">
                         <?php echo $validationErrors['birthday']; ?>
                     </span>
                 </div>
 
                 <div class="form-group">
-                    <input type="password" name="password" id="password" class="form-control <?php echo !empty($validationErrors['password']) ? 'is-invalid' : ''; ?>" placeholder="Password" required="">
+                    <input type="password" name="password" id="password" class="form-control <?php echo !empty($validationErrors['password']) ? 'is-invalid' : ''; ?>" placeholder="Password" required="" >
                     <span class="error">
                         <?php echo $validationErrors['password']; ?>
                     </span>

@@ -1,12 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['email']) && !isset($_SESSION['id'])) {
-    header("Location: login.php");
-} else if (empty($_SESSION['email']) || empty($_SESSION['id'])){
-    header("Location: login.php");
-}
-
+include "include/validation.php";
 include "include/conn.php";
 
 $query_user_data = "SELECT *
@@ -31,6 +26,7 @@ if (isset($_SESSION['profile_form_validations'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html>
 
@@ -38,72 +34,75 @@ if (isset($_SESSION['profile_form_validations'])) {
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Update Profile</title>
-
+    <title>INSPINIA | Dashboard</title>
     <?php
     include "include/header.php";
     ?>
 
-
 </head>
 
-<body class="">
+<body>
+<div id="wrapper">
+    <!-- Navbar -->
+    <?php
+    include('include/sidebar.php');
+    ?>
 
-<?php
-include "include/menu.php";
-?>
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <?php
+        include 'include/navbar.php';
+        ?>
 
-            <div class="row wrapper border-bottom white-bg page-heading">
-                <div class="col-sm-4">
-                    <h2>Update profile</h2>
-                    <ol class="breadcrumb">
-                        <li>
-                            <a href="profile.php">Profile</a>
-                        </li>
-                        <li class="active">
-                            <strong>Update Profile</strong>
-                        </li>
-                    </ol>
-                </div>
-<!--                <div class="col-sm-8">
-                    <div class="title-action">
-                        <a href="" class="btn btn-primary">This is action area</a>
-                    </div>
-                </div>-->
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-sm-4">
+                <h2>Update profile</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="profile.php">Profile</a>
+                    </li>
+                    <li class="active">
+                        <strong>Update Profile</strong>
+                    </li>
+                </ol>
             </div>
+        </div>
 
-            <div class="wrapper wrapper-content animated fadeInRightBig">
-                <div class="container px-4 mt-4">
 
-                    <form method="POST" class="profile-form" id="profile-form" enctype='multipart/form-data' action="backend/profile_request.php">
-                        <br><br><br>
-                        <div class="row">
-                            <div class="col-xl-4">
-                                <!-- Profile picture card-->
-                                <div class="card mb-4 mb-xl-0">
-                                    <h3 class="font-bold">Profile Picture</h3>
-                                    <div class="card-body text-center">
-                                        <!-- Profile picture image-->
-                                        <label for="picture" class="upload-file">
-                                            <img id="profile-pic" class="img-account-profile rounded-circle mb-2 photo-src" src="inspina/<?=$data['picture']?>" alt="" style="width: 300px; height: 300px; object-fit: cover">
-                                            <br><br>
-                                            <!-- Profile picture help block-->
-                                            <input type="file" id="picture" name="picture" class="form-control m-t" accept="image/*" onchange="previewImage(event)">
-                                        </label>
-                                        <br>
-                                        <div class="error">
-                                            <?php echo $validationErrors['picture']; ?>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="wrapper wrapper-content animated fadeInRightBig">
+                    <div class="container px-4 mt-4">
+
+                        <form method="POST" class="profile-form" id="profile-form" enctype='multipart/form-data' action="backend/profile_request.php">
+                            <br><br><br>
+                            <div class="row">
+                                <div class="col-xl-4">
+                                    <!-- Profile picture card-->
+                                    <div class="card mb-4 mb-xl-0">
+                                        <h3 class="font-bold">Profile Picture</h3>
+                                        <div class="card-body text-center">
+                                            <!-- Profile picture image-->
+                                            <label for="picture" class="upload-file">
+                                                <img id="profile-pic" class="img-account-profile rounded-circle mb-2 photo-src" src="inspina/<?=$data['picture']?>" alt="" style="width: 300px; height: 300px; object-fit: cover">
+                                                <br><br>
+                                                <!-- Profile picture help block-->
+                                                <input type="file" id="picture" name="picture" class="form-control m-t" accept="image/*" onchange="previewImage(event)">
+                                            </label>
+                                            <br>
+                                            <div class="error">
+                                                <?php echo $validationErrors['picture']; ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-8">
-                                <!-- Account details card-->
-                                <div class="card mb-4">
-                                    <br><br>
-                                    <h3 class="font-bold">Profile Details</h3><br>
-                                    <div class="card-body">
+                                <div class="col-xl-8">
+                                    <!-- Account details card-->
+                                    <div class="card mb-4">
+                                        <br><br>
+                                        <h3 class="font-bold">Profile Details</h3><br>
+                                        <div class="card-body">
                                             <!-- Form Row-->
                                             <div class="row gx-3 mb-3">
                                                 <div class="col-md-6">
@@ -132,13 +131,13 @@ include "include/menu.php";
                                                 </div>
                                             </div>
 
-                                        <!-- Form Group (role)-->
-                                        <div class="mb-3">
-                                            <br>
-                                            <label class="small mb-1" for="role">Role</label>
-                                            <input class="form-control m-t" id="role" name = 'role' type="text" value="<?= $data['role'] ?>" readonly>
+                                            <!-- Form Group (role)-->
+                                            <div class="mb-3">
+                                                <br>
+                                                <label class="small mb-1" for="role">Role</label>
+                                                <input class="form-control m-t" id="role" name = 'role' type="text" value="<?= $data['role'] ?>" readonly>
 
-                                        </div>
+                                            </div>
 
                                             <!-- Form Group (birthday)-->
 
@@ -172,23 +171,52 @@ include "include/menu.php";
                                                     </div>
                                                 </div>
                                             </div>
-                                        <input type="hidden" name="page" value="updateprofile">
+                                            <input type="hidden" name="page" value="updateprofile">
                                             <!-- Save changes button-->
                                             <input type="submit" name="edit" id="edit" class="btn btn-primary m-t" value="Save"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-
-
+                <?php
+                include 'include/footer.php';
+                ?>
             </div>
+        </div>
+
+    </div>
+</div>
+
 <?php
-include "include/footer.php";
 include "include/scripts.php";
 ?>
+
+
 <script>
+        $(document).ready(function() {
+        // Check if the notification has already been shown
+        var shown = '<?php echo isset($_SESSION['has_shown']) ? $_SESSION['has_shown'] : 'false'; ?>';
+
+        if (shown !== 'true') {
+        setTimeout(function() {
+        toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        showMethod: 'slideDown',
+        timeOut: 4000
+    };
+        toastr.success('Welcome <?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ''; ?>', 'Intership project');
+
+        // Set the flag to indicate that the notification has been shown
+        <?php $_SESSION['has_shown'] = 'true'; ?>
+    }, 1300);
+    }
+    });
+
+
     function previewImage(event) {
         var input = event.target;
         var reader = new FileReader();
@@ -201,8 +229,6 @@ include "include/scripts.php";
 
         reader.readAsDataURL(input.files[0]);
     }
-
 </script>
 </body>
-
 </html>
