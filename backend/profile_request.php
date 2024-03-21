@@ -3,17 +3,15 @@ session_start();
 
 include "../include/conn.php";
 
-if(isset($_POST['edit']))
-{
+if(isset($_POST['edit'])) {
     $page = $_POST['page'];
-    if($page === "updateprofile"){
+    if ($page === "updateprofile") {
         $id = $_SESSION['id'];
-    }
-    else if($page === "updateusers"){
+    } else if ($page === "updateusers") {
         $id = $_POST['id'];
     }
-/*    print_r($id);
-    exit;*/
+    /*    print_r($id);
+        exit;*/
 
 
     $name = $conn->escape_string($_POST['name']);
@@ -29,42 +27,45 @@ if(isset($_POST['edit']))
     $age = $now->diff($dob)->y;
     $uppercase = preg_match('@[A-Z]@', $password);
     $lowercase = preg_match('@[a-z]@', $password);
-    $number    = preg_match('@[0-9]@', $password);
+    $number = preg_match('@[0-9]@', $password);
     $specialChars = preg_match('@[^\w]@', $password);
     $validationErrors = array();
 
-    $select= "select * from users where id='$id'";
+    $select = "select * from users where id='$id'";
 
-    $sql = mysqli_query($conn,$select);
+    $sql = mysqli_query($conn, $select);
     $row = mysqli_fetch_assoc($sql);
-    $res= $row['id'];
+    $res = $row['id'];
 
-/*    print_r($id);
-    print_r($res);
-    exit;*/
-    if($res == $id) {
+    /*    print_r($id);
+        print_r($res);
+        exit;*/
+    if ($res == $id) {
 
         $update = "UPDATE users 
                     SET  ";
 
         if (preg_match($alphanumericRegex, $name)) {
             $update .= " name = '$name'";
-        }
-        else{
+        } else {
             $validationErrors['name'] = "Name must contain only letters";
         }
 
         if (preg_match($alphanumericRegex, $lastname)) {
             $update .= ", lastname = '$lastname'";
-        }
-        else{
+        } else {
             $validationErrors['lastname'] = "Last name must contain only letters";
         }
 
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+        $check_email_sql = "SELECT * FROM users WHERE email = '$email'";
+        $result = $conn->query($check_email_sql);
+
+        if ($result->num_rows > 0) {
+            $validationErrors['email'] = "Email already exists!";
+        } else if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $update .= ", email = '$email'";
-        }
-        else{
+        } else {
             $validationErrors['email'] = "Invalid email format";
         }
 
@@ -72,21 +73,19 @@ if(isset($_POST['edit']))
 
         if ($age >= 18) {
             $update .= ", birthday ='$birthday'";
-        }
-        else{
+        } else {
             $validationErrors['birthday'] = "You must be at least 18 years old.";
         }
 
-        if(!empty($password) && (!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8)) {
+        if (!empty($password) && (!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8)) {
             $validationErrors['password'] = "Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.";
-        }
-        else if (!empty($password) && $password == $confirmPassword &&
+        } else if (!empty($password) && $password == $confirmPassword &&
             ($uppercase && $lowercase && $number && $specialChars && strlen($password) > 8)) {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $update .= ", password = '$hashed_password'";
         }
 
-        if ($password != $confirmPassword){
+        if ($password != $confirmPassword) {
             $validationErrors['confirmPassword'] = "Password does not match";
         }
 //
@@ -118,11 +117,10 @@ if(isset($_POST['edit']))
 
         if (!empty($validationErrors)) {
             $_SESSION['profile_form_validations'] = $validationErrors;
-            if($page === "updateprofile"){
+            if ($page === "updateprofile") {
                 header('Location: ../profile.php');
                 exit;
-            }
-            else if($page === "updateusers"){
+            } else if ($page === "updateusers") {
                 header("Location: ../update.php?id=$id");
                 exit;
             }
@@ -132,27 +130,21 @@ if(isset($_POST['edit']))
 
 //        print_r($update);
 //        exit;
-        $sql2=mysqli_query($conn,$update);
-        if($sql2)
-        {
-            if($page === "updateprofile"){
+        $sql2 = mysqli_query($conn, $update);
+        if ($sql2) {
+            if ($page === "updateprofile") {
                 header('Location: ../profile.php');
                 exit;
-            }
-            else if($page === "updateusers"){
+            } else if ($page === "updateusers") {
                 header("Location: ../contacts.php");
                 exit;
             }
 
-        }
-        else
-        {
+        } else {
             /*sorry your profile is not update*/
             header('location:../logout.php');
         }
-    }
-    else
-    {
+    } else {
         /*sorry your id is not match*/
         header('location:../logout.php');
     }

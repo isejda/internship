@@ -12,9 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirmPassword = $conn->escape_string($_POST['confirmPassword']);
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $birthday = $conn->escape_string($_POST['birthday']);
-    $dob = new DateTime($birthday);
-    $now = new DateTime();
-    $age = $now->diff($dob)->y;
     $alphanumericRegex = '/^[a-zA-Z]+$/';
     $validationErrors = array();
 
@@ -69,8 +66,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($age)) {
         $validationErrors['birthday'] = "Birthday is required";
     }
-    else if ($age < 18) {
-        $validationErrors['birthday'] = "You must be at least 18 years old.";
+    else {
+        $dob = new DateTime($birthday);
+        $now = new DateTime();
+        $age = $now->diff($dob)->y;
+        if($age < 18){
+            $validationErrors['birthday'] = "You must be at least 18 years old.";
+        }
     }
 
 
@@ -109,8 +111,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $role = 'user';
-    $sql = "INSERT INTO users (name, lastname, email, password, role,  birthday) 
-        VALUES ('$name', '$lastname', '$email', '$hashed_password', '$role', ' $birthday')";
+    $picture = '../storage/photos/download.jpeg';
+
+    $sql = "INSERT INTO users (name, lastname, email, password, role, birthday, picture) 
+        VALUES ('$name', '$lastname', '$email', '$hashed_password', '$role', ' $birthday', '$picture')";
 
     if ($conn->query($sql)) {
         if($page === "register"){

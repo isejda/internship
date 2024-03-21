@@ -36,7 +36,7 @@ if (isset($_SESSION['profile_form_validations'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>INSPINIA | Dashboard</title>
+    <title>Update Profile</title>
     <?php
     include "include/header.php";
     ?>

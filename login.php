@@ -22,7 +22,7 @@ if(isset($_SESSION['id'])){
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>INSPINIA | Login</title>
+    <title>Login</title>
 
     <?php
     include "include/header.php";

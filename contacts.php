@@ -21,13 +21,13 @@ if (isset($_SESSION['register_form_validations'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>INSPINIA | Dashboard</title>
+    <title>Admin's Dashboard</title>
 
     <?php
     include "include/header.php";
     ?>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="js/modalval.js"></script>
+    <script src="js/modalvalidate.js"></script>
 
 
 
@@ -88,7 +88,7 @@ if (isset($_SESSION['register_form_validations'])) {
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="name">First name</label>
                                                     <input class="form-control" id="name" name = 'name' type="text" placeholder="Enter your first name" value="">
-                                                    <div class="errorMessage">
+                                                    <div class="error" id="error">
                                                         <?php echo $validationErrors['name']; ?>
                                                     </div>
                                                 </div>
@@ -96,7 +96,7 @@ if (isset($_SESSION['register_form_validations'])) {
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="lastname">Last name</label>
                                                     <input class="form-control" id="lastname" name = 'lastname'  type="text" placeholder="Enter your last name" value="">
-                                                    <div class="errorMessage">
+                                                    <div class="error">
                                                         <?php echo $validationErrors['lastname']; ?>
                                                     </div>
                                                 </div>
@@ -104,7 +104,7 @@ if (isset($_SESSION['register_form_validations'])) {
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="email">Email address</label>
                                                     <input class="form-control" id="email" name = 'email' type="email" placeholder="Enter your email address" value="">
-                                                    <div class="errorMessage">
+                                                    <div class="error">
                                                         <?php echo $validationErrors['email']; ?>
                                                     </div>
                                                 </div>
@@ -112,7 +112,7 @@ if (isset($_SESSION['register_form_validations'])) {
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="birthday">Birthday</label>
                                                     <input class="form-control" id="birthday" name = 'birthday' type="date" value="">
-                                                    <div class="errorMessage">
+                                                    <div class="error">
                                                         <?php echo $validationErrors['birthday']; ?>
                                                     </div>
                                                 </div>
@@ -120,7 +120,7 @@ if (isset($_SESSION['register_form_validations'])) {
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="password">New password</label>
                                                     <input class="form-control" id="password" type="password" name="password" placeholder="Enter your new password" value="">
-                                                    <div class="errorMessage">
+                                                    <div class="error">
                                                         <?php echo $validationErrors['password']; ?>
                                                     </div>
                                                 </div>
@@ -129,14 +129,14 @@ if (isset($_SESSION['register_form_validations'])) {
                                                 <div class="form-group">
                                                     <label class="small mb-1" for="confirmPassword">Confirm new password</label>
                                                     <input class="form-control" id="confirmPassword" type="password" name="confirmPassword" placeholder="Enter your new password" value="">
-                                                    <div class="errorMessage">
+                                                    <div class="error">
                                                         <?php echo $validationErrors['confirmPassword']; ?>
                                                     </div>
                                                 </div>
                                                 <input type="hidden" name="page" value="display">
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn_close">Close</button>
                                                 <button type="button" name="insertdata" id="insertdata" class="btn btn-success">Save Data</button>
                                             </div>
                                         </form>

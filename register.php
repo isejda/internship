@@ -25,7 +25,7 @@ if(isset($_SESSION['id'])){
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>INSPINIA | Register</title>
+    <title>Register</title>
 
     <?php
     include "include/header.php";
