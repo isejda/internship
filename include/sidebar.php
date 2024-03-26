@@ -38,7 +38,7 @@ include 'include/getdata.php';
 
             <?php if($_SESSION['role'] === 'admin'){ ?>
                 <li>
-                    <a href="contacts.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashbord</span></a>
+                    <a href="dashboard.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashbord</span></a>
                 </li>
             <?php } ?>
         </ul>

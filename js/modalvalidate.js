@@ -3,7 +3,7 @@ $(document).ready(function () {
 })
 
 function Insert_record() {
-    $(document).on('click', '#insertdata', function () {
+    $(document).on('submit', '#insertdata', function () {
         $('#insertdata').prop('disabled', true);
 
         $('input').on('input', function () {
@@ -108,10 +108,10 @@ function Insert_record() {
                 success: function (data){
                     if (data.includes('Email already exists!')) {
                         $('#email').after('<div class="error">' + data + '</div>');
-                        $('#studentaddmodal').modal('show');
+                        $('#myModal').modal('show');
                     } else {
                         $('#message').html('<div class="error" style="color: green!important;">' + data + '</div>');
-                        $('#studentaddmodal').modal('show');
+                        $('#myModal').modal('show');
                         $('form').trigger('reset');
 
                     }
@@ -125,8 +125,6 @@ function Insert_record() {
         $('form').trigger('reset');
         $('#message').html('');
         $('.error').remove();
-
-
     })
 }
 

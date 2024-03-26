@@ -78,7 +78,7 @@ if (isset($_SESSION['profile_form_validations'])) {
                             <a href="home.php">Home</a>
                         </li>
                         <li>
-                            <a href="contacts.php">Clients</a>
+                            <a href="dashboard.php">Clients</a>
                         </li>
 
                         <li class="active">
@@ -218,8 +218,8 @@ if (isset($_SESSION['profile_form_validations'])) {
                         </form>
                         <br>
                     </div>
-                    <button class="btn btn-danger deleteBtn" data-id=" <?php echo $_GET['id']; ?>" style="margin-left: 224px">Delete</button>
-                </div>
+<!--                    <button class="btn btn-danger deleteBtn" data-id=" <?php /*//echo $_GET['id']; */?><!--" style="margin-left: 224px">Delete</button>-->
+-->                </div>
                 <?php
                 include 'include/footer.php';
                 ?>

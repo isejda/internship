@@ -36,6 +36,10 @@ if(isset($_POST['edit'])) {
     $sql = mysqli_query($conn, $select);
     $row = mysqli_fetch_assoc($sql);
     $res = $row['id'];
+    $oldEmail = $row['email'];
+//    print_r($oldEmail);
+//    print_r($email);
+//    exit;
 
     /*    print_r($id);
         print_r($res);
@@ -57,17 +61,19 @@ if(isset($_POST['edit'])) {
             $validationErrors['lastname'] = "Last name must contain only letters";
         }
 
+        if($oldEmail != $email){
+            $check_email_sql = "SELECT * FROM users WHERE email = '$email'";
+            $result = $conn->query($check_email_sql);
 
-        $check_email_sql = "SELECT * FROM users WHERE email = '$email'";
-        $result = $conn->query($check_email_sql);
-
-        if ($result->num_rows > 0) {
-            $validationErrors['email'] = "Email already exists!";
-        } else if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $update .= ", email = '$email'";
-        } else {
-            $validationErrors['email'] = "Invalid email format";
+            if ($result->num_rows > 0) {
+                $validationErrors['email'] = "Email already exists!";
+            } else if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $update .= ", email = '$email'";
+            } else {
+                $validationErrors['email'] = "Invalid email format";
+            }
         }
+
 
         $update .= ", role ='$selectedRole'";
 
@@ -136,7 +142,7 @@ if(isset($_POST['edit'])) {
                 header('Location: ../profile.php');
                 exit;
             } else if ($page === "updateusers") {
-                header("Location: ../contacts.php");
+                header("Location: ../dashboard.php");
                 exit;
             }
 
