@@ -26,7 +26,7 @@ include "include/validation.php";
     </style>
 </head>
 
-<body>
+<body class="pace-done">
 
 <div id="wrapper">
 
@@ -62,74 +62,10 @@ include "include/validation.php";
         <div class="wrapper wrapper-content animated fadeInRight">
 
             <div align="left">
-                <button type="button" id="add_button" class="btn btn-primary add-user"data-toggle="modal" data-target="#studentaddmodal"><i class="fa fa-plus">&nbsp;</i> Add Member </button>
+                <button type="button" id="add_button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    <i class="fa fa-plus">&nbsp;</i> Add Member
+                </button>
             </div>
-            <div class="modal fade" id="studentaddmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add a new user</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form method="POST" class="profile-form" id="modalForm" enctype='multipart/form-data'  action="">
-
-                            <div class="modal-body">
-                                <p id="message"></p>
-                                <div class="form-group">
-                                    <label class="small mb-1" for="name">First name</label>
-                                    <input class="form-control" id="name" name = 'name' type="text" placeholder="Enter your first name" value="">
-                                    <div class="error" id="error">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="small mb-1" for="lastname">Last name</label>
-                                    <input class="form-control" id="lastname" name = 'lastname'  type="text" placeholder="Enter your last name" value="">
-                                    <div class="error">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="small mb-1" for="email">Email address</label>
-                                    <input class="form-control" id="email" name = 'email' type="email" placeholder="Enter your email address" value="">
-                                    <div class="error">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="small mb-1" for="birthday">Birthday</label>
-                                    <input class="form-control" id="birthday" name = 'birthday' type="date" value="">
-                                    <div class="error">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="small mb-1" for="password">New password</label>
-                                    <input class="form-control" id="password" type="password" name="password" placeholder="Enter your new password" value="">
-                                    <div class="error">
-                                    </div>
-                                </div>
-                                <input type="hidden" name="page" value="display">
-
-                                <div class="form-group">
-                                    <label class="small mb-1" for="confirmPassword">Confirm new password</label>
-                                    <input class="form-control" id="confirmPassword" type="password" name="confirmPassword" placeholder="Enter your new password" value="">
-                                    <div class="error">
-                                    </div>
-                                </div>
-                                <input type="hidden" name="page" value="display">
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn_close">Close</button>
-                                <button type="button" name="insertdata" id="insertdata" class="btn btn-primary">Save Data</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
@@ -175,6 +111,85 @@ include "include/validation.php";
                 </div>
             </div>
 
+            <div class="modal inmodal in" id="myModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content animated bounceInRight">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" id="btn_dismiss"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title">Add a new user</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <form method="POST" class="profile-form" id="modalForm" enctype='multipart/form-data'>
+
+                                <div class="modal-body">
+                                    <p id="message"></p>
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="name">First name</label>
+                                        <input class="form-control" id="name" name = 'name' type="text" placeholder="Enter your first name" value="">
+                                        <div class="error" id="error">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="lastname">Last name</label>
+                                        <input class="form-control" id="lastname" name = 'lastname'  type="text" placeholder="Enter your last name" value="">
+                                        <div class="error">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="email">Email address</label>
+                                        <input class="form-control" id="email" name = 'email' type="email" placeholder="Enter your email address" value="">
+                                        <div class="error">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="birthday">Birthday</label>
+                                        <input class="form-control" id="birthday" name = 'birthday' type="date" value="">
+                                        <div class="error">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="role">Role</label>
+                                        <select class="form-control" name="role" id="role">
+                                                <option value="admin">Admin</option>
+                                                <option value="user" selected>User</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="password">New password</label>
+                                        <input class="form-control" id="password" type="password" name="password" placeholder="Enter your new password" value="">
+                                        <div class="error">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="page" value="display">
+
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="confirmPassword">Confirm new password</label>
+                                        <input class="form-control" id="confirmPassword" type="password" name="confirmPassword" placeholder="Enter your new password" value="">
+                                        <div class="error">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="page" value="display">
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="hidden" name="member_id" id="member_id" />
+                                    <input type="hidden" name="operation" id="operation" />
+                                    <button type="button" class="btn btn-white" data-dismiss="modal" id="btn_close">Close</button>
+                                    <input type="submit" name="insertdata" id="insertdata" class="btn btn-primary" value="Save" />
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
 
@@ -193,14 +208,195 @@ include "include/scripts.php";
 ?>
 
 <script>
-$(document).ready(function (){
-    var dataTable = $('#memListTable').DataTable({
-        "processing":true,
-        "serverSide": true,
-        "ajax":{
-            url: 'backend/fetchTable.php',
-            method:"post",
+    let dataTable;
+
+    $(document).ready(function (){
+        $('#add_button').click(function(){
+            $('#modalForm')[0].reset();
+            $('.modal-title').text("Add New Details");
+            $('#insertdata').val("Save");
+            $('#operation').val("Save");
+        });
+
+        dataTable = $('#memListTable').DataTable({
+            "processing":true,
+            "serverSide": true,
+            "ajax":{
+                url: 'backend/fetchTable.php',
+                method:"post",
+            }
+        });
+
+        var shown = '<?php
+            if(isset($_SESSION['has_shown'])){
+                echo $_SESSION['has_shown'];
+            }
+            else{
+                echo 'false';
+            }
+            ?>';
+        if (shown !== 'true') {
+            setTimeout(function() {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    timeOut: 4000
+                };
+                toastr.success('Welcome <?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ''; ?>', 'Intership project');
+
+                // ruajme ne variablen has_shown true ne momentin qe ekzekutohet nje here
+                <?php $_SESSION['has_shown'] = 'true'; ?>
+            }, 1300);
         }
+
+    });
+
+    $(document).on('click', '#btn_close', function () {
+        closeModal();
+    })
+
+    $(document).on('click', '#btn_dismiss', function () {
+        closeModal();
+    });
+
+    $(document).on('submit', '#modalForm', function(event) {
+        $('#insertdata').prop('disabled', true);
+
+        $('input').on('input', function () {
+            // Enable the button when a change occurs
+            $('#insertdata').prop('disabled', false);
+            $('.error').remove();
+        });
+
+        event.preventDefault();
+        var id = $('#id').val();
+        var name = $('#name').val();
+        var lastname = $('#lastname').val();
+        var email = $('#email').val();
+        var birthday = $('#birthday').val();
+        var password = $('#password').val();
+        var confirmPassword = $('#confirmPassword').val();
+        var isValid = true;
+        const numbers = /[0-9]/;
+        const regularExpression = /^(?=.*[a-zA-Z])(?=.*[0-9!@#$%^&*]).{8,16}$/;
+        var operation = $('#operation').val();
+
+
+        if (name === "") {
+            $('#name').after('<div class="error">Please enter your name</div>');
+            isValid = false;
+        } else if (numbers.test(name)) {
+            $('#name').after('<div class="error">Name must contain only letters</div>');
+            isValid = false;
+        }
+
+
+        if (lastname === "") {
+            $('#lastname').after('<div class="error">Please enter your lastname</div>');
+            isValid = false;
+        } else if (numbers.test(lastname)) {
+            $('#lastname').after('<div class="error">Lastname must contain only letters</div>');
+            isValid = false;
+        }
+
+
+        if (email === "") {
+            $('#email').after('<div class="error">Please enter your email</div>');
+            isValid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+            $('#email').after('<div class="error">Please enter a valid email</div>');
+            isValid = false;
+        }
+
+
+        if (birthday === "") {
+            $('#birthday').after('<div class="error">Please enter your birthday</div>');
+            isValid = false;
+        }
+        else if(getAge(birthday) < 18){
+            $('#birthday').after('<div class="error">You should be over 18</div>');
+            isValid = false;
+        }
+
+        if (operation === "Save") {
+            if (password === "") {
+                $('#password').after('<div class="error">Please enter your password</div>');
+                isValid = false;
+            }else if (password.length < 8) {
+                $('#password').after('<div class="error">Password is expected to be 8 characters</div>');
+                isValid = false;
+            } else if (!regularExpression.test(password)) {
+                $('#password').after('<div class="error">Password should contain atleast one number, one special character and one letter</div>');
+                isValid = false;
+            }
+            if (confirmPassword === "") {
+                $('#confirmPassword').after('<div class="error">Please confirm your password</div>');
+                isValid = false;
+            }
+        }
+        if (operation === "Edit") {
+            if (password !== "") {
+                if (password.length < 8) {
+                    $('#password').after('<div class="error">Password is expected to be 8 characters</div>');
+                    isValid = false;
+                } else if (!regularExpression.test(password)) {
+                    $('#password').after('<div class="error">Password should contain atleast one number, one special character and one letter</div>');
+                    isValid = false;
+                }
+            }
+        }
+
+        if (password !== confirmPassword) {
+            $('#confirmPassword').after('<div class="error">Password do not match</div>');
+            isValid = false;
+        }
+
+
+        if(isValid){
+            $.ajax({
+                url: '../inspina/backend/adduser.php',
+                method: 'POST',
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                success:function (data){
+                    if (data.includes('Email already exists!')) {
+                        $('#email').after('<div class="error">' + data + '</div>');
+                        $('#myModal').modal('show');
+                    } else {
+                        $('#message').html('<div class="error" style="color: green!important;">' + data + '</div>');
+                        $('#myModal').modal('show');
+                        $('form').trigger('reset');
+
+                    }
+                    $('#modalForm')[0].reset();
+                    // $('#myModal').modal('hide');
+                    dataTable.ajax.reload();
+                }
+            })
+        }
+    });
+
+    $(document).on('click', '.update-user-btn', function(e){
+        e.preventDefault();
+        var member_id = $(this).attr("id");
+        var tr = $(this).closest('tr');
+        console.log(dataTable);
+        var data = dataTable.rows(tr).data();
+        console.log(data[0]);
+        $('#id').val(data[0][0]);
+        $('#name').val(data[0][1]);
+        $('#lastname').val(data[0][2]);
+        $('#email').val(data[0][3]);
+        $('#birthday').val(data[0][4]);
+        $('.modal-title').text("Edit Member Details");
+        $('#member_id').val(member_id);
+        $('#insertdata').val("Update");
+        $('#operation').val("Edit");
+        $('#myModal').show();
+        $('.modal-backdrop').show();
+
     });
 
     $(document).on('click', '.delete', function(){
@@ -221,52 +417,30 @@ $(document).ready(function (){
                 window.location.href = 'backend/delete.php?deleteid=' + member_id;
             }
         });
-/*
-        if(confirm("Are you sure you want to delete this user?"))
-        {
-            $.ajax({
-                url:'backend/delete.php?deleteid=' + member_id,
-                method:"POST",
-                data:{member_id:member_id},
-                success:function(data)
-                {
-                    dataTable.ajax.reload();
-                }
-            });
-        }
-        else
-        {
-            return false;
-        }*/
     });
 
-    var shown = '<?php
-        if(isset($_SESSION['has_shown'])){
-            echo $_SESSION['has_shown'];
-        }
-        else{
-            echo 'false';
-        }
-        ?>';
 
+    function closeModal(){
+        //reset form, titull dhe buttons
 
-    if (shown !== 'true') {
-        setTimeout(function() {
-            toastr.options = {
-                closeButton: true,
-                progressBar: true,
-                showMethod: 'slideDown',
-                timeOut: 4000
-            };
-            toastr.success('Welcome <?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ''; ?>', 'Intership project');
-
-            // ruajme ne variablen has_shown true ne momentin qe ekzekutohet nje here
-            <?php $_SESSION['has_shown'] = 'true'; ?>
-        }, 1300);
+        $('#modalForm')[0].reset();
+        // $('form').trigger('reset');
+        $('#message').html('');
+        $('.error').remove();
+        $('.modal-backdrop').hide();
+        $('#myModal').hide();
+        dataTable.ajax.reload();
     }
-
-
-});
+    function getAge(DOB) {
+        var today = new Date();
+        var birthDate = new Date(DOB);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
 
 </script>
 

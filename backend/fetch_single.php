@@ -1,13 +1,5 @@
 <?php
-include('include/conn.php');
-function get_total_all_records()
-{
-    $statement = $conn->prepare("SELECT * FROM users");
-    $statement->execute();
-    $result = $statement->fetchAll();
-    return $statement->rowCount();
-}
-
+require_once(__DIR__ . '/../include/conn.php');
 if(isset($_POST["member_id"]))
 {
     $output = array();
@@ -22,11 +14,8 @@ if(isset($_POST["member_id"]))
         $output["lastname"] = $row["lastname"];
         $output["email"] = $row["email"];
         $output["birthday"] = $row["birthday"];
-        $output["password"] = $row["password"];
         echo json_encode($output);
     } else {
-        // Handle case where no member with the given ID is found
         echo json_encode(array("error" => "Member not found"));
     }
 }
-?>

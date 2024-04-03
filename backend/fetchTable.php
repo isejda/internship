@@ -65,7 +65,7 @@ while($row = mysqli_fetch_array($query)){
     $subdata[] = $row[3]; //email
     $subdata[] = $row[4]; //birthday
     $subdata[] = $row[5]; //role
-    $subdata[] = '<button type="button" name="update" id="'.$row[0].'" class="btn btn-w-m btn-primary btn-xm update"><i class="fa fa-edit">&nbsp;</i>Edit</button>
+    $subdata[] = '<button type="button" name="update" id="'.$row[0].'" class="btn btn-w-m btn-primary btn-xm update-user-btn"><i class="fa fa-edit">&nbsp;</i>Edit</button>
                   <button type="button" name="delete" id="'.$row[0].'" class="btn btn-w-m btn-danger btn-xm delete" ><i class="fa fa-trash">&nbsp;</i>Delete</button>';
 /*                  <a href="backend/delete.php?deleteid='.$row[0].'" onclick="return confirm(\'Are you sure?\')" class="btn btn-w-m btn-danger btn-xm"><i class="fa fa-trash">&nbsp;</i>Delete</a>';*/
     $data[]=$subdata;

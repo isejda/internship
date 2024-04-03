@@ -1,9 +1,10 @@
+/*
 $(document).ready(function () {
     Insert_record();
 })
 
 function Insert_record() {
-    $(document).on('submit', '#insertdata', function () {
+    $(document).on('click', '#insertdata', function () {
         $('#insertdata').prop('disabled', true);
 
         $('input').on('input', function () {
@@ -88,10 +89,10 @@ function Insert_record() {
         }
 
 
-/*        if (name === "" || lastname === "" || email === "" || birthday === "" || password === "" || confirmPassword === "") {
+/!*        if (name === "" || lastname === "" || email === "" || birthday === "" || password === "" || confirmPassword === "") {
             $('#message').html('<span style="color: red">Please Fill in the Blanks</span>')
         }
-        else {*/
+        else {*!/
 
         if(isValid){
             $.ajax({
@@ -115,8 +116,8 @@ function Insert_record() {
                         $('form').trigger('reset');
 
                     }
-/*                    $('#message').html(data);
-                    $('form').trigger('reset');*/
+/!*                    $('#message').html(data);
+                    $('form').trigger('reset');*!/
                 }
             })
         }
@@ -138,3 +139,4 @@ function getAge(DOB) {
     }
     return age;
 }
+*/
