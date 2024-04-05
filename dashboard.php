@@ -196,14 +196,11 @@ include "include/validation.php";
     </div>
 </div>
 
-
-
-
 <?php
 include "include/scripts.php";
 ?>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
 
 <script>
     let dataTable;
@@ -236,7 +233,6 @@ include "include/scripts.php";
             }
             return age >= 18;
         });
-
         $.validator.addMethod("strongPassword", function(value) {
             var capitalLetterRegex = /[A-Z]/;
             var lowercaseLetterRegex = /[a-z]/;
@@ -249,7 +245,6 @@ include "include/scripts.php";
             var hasSpecialCharacter = specialCharacterRegex.test(value);
             return hasCapital && hasLowercase && hasNumber && hasSpecialCharacter;
         });
-
 
         $( "#modalForm" ).validate({
             rules: {
@@ -310,7 +305,6 @@ include "include/scripts.php";
             }
         });
 
-
         var shown = '<?php
             if(isset($_SESSION['has_shown'])){
                 echo $_SESSION['has_shown'];
@@ -337,10 +331,12 @@ include "include/scripts.php";
     });
 
     $(document).on('click', '#btn_close', function () {
+        resetFormValidation();
         closeModal();
     })
 
     $(document).on('click', '#btn_dismiss', function () {
+        resetFormValidation();
         closeModal();
     });
 
@@ -446,6 +442,12 @@ include "include/scripts.php";
         $('body').addClass('modal-open').append('<div class="modal-backdrop in"></div>');
         $('#myModal').show();
     }
+
+    function resetFormValidation() {
+        $('#modalForm').validate().resetForm();
+        $('#modalForm .error').remove();
+    }
+
 
 </script>
 
