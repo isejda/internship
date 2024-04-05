@@ -18,7 +18,6 @@ include "include/validation.php";
     include "include/header.php";
     ?>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
     <style>
         .swal2-popup {
             font-size: 1.6rem;
@@ -202,8 +201,6 @@ include "include/validation.php";
 <?php
 include "include/scripts.php";
 ?>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
 <script>
     let dataTable;
@@ -219,97 +216,6 @@ include "include/scripts.php";
                 }
             }
         });
-
-        jQuery.validator.setDefaults({
-            debug: true,
-            success: "valid"
-        });
-
-        $.validator.addMethod("over18", function(value) {
-            var birthday = new Date(value);
-
-            var today = new Date();
-            var age = today.getFullYear() - birthday.getFullYear();
-            var monthDiff = today.getMonth() - birthday.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
-                age--;
-            }
-            return age >= 18;
-        });
-
-        $.validator.addMethod("strongPassword", function(value) {
-            var capitalLetterRegex = /[A-Z]/;
-            var lowercaseLetterRegex = /[a-z]/;
-            var numberRegex = /[0-9]/;
-            var specialCharacterRegex = /[!@#$%^&*]/;
-
-            var hasCapital = capitalLetterRegex.test(value);
-            var hasLowercase = lowercaseLetterRegex.test(value);
-            var hasNumber = numberRegex.test(value);
-            var hasSpecialCharacter = specialCharacterRegex.test(value);
-            return hasCapital && hasLowercase && hasNumber && hasSpecialCharacter;
-        });
-
-
-        $( "#modalForm" ).validate({
-            rules: {
-                name: {
-                    required: true,
-                    lettersonly: true
-                },
-                lastname: {
-                    required: true,
-                    lettersonly: true
-                },
-                email: {
-                    required: true,
-                    email: true
-                },
-                birthday: {
-                    required: true,
-                    date: true,
-                    over18: true
-                },
-                password: {
-                    required: true,
-                    minlength: 8,
-                    strongPassword: true
-                },
-                confirmPassword: {
-                    required: true,
-                    equalTo: "#password"
-                }
-            },
-            messages:{
-                name: {
-                    required: 'Name is mandatory',
-                    lettersonly: 'Name cannot contain digits'
-                },
-                lastname: {
-                    required: 'Lastname is mandatory',
-                    lettersonly: 'Lastname cannot contain digits'
-                },
-                birthday: {
-                    required: 'Birthday is mandatory',
-                    date: "Please enter a valid date.",
-                    over18: "You must be 18 or older."
-                },
-                email: {
-                    required: 'Email is mandatory',
-                    email: 'Please enter a valid email address'
-                },
-                password: {
-                    required: 'Please enter your password',
-                    minlength: 'Password must be at least 8 characters long',
-                    strongPassword: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
-                },
-                confirmPassword: {
-                    required: 'Please confirm your password',
-                    equalTo: 'Passwords do not match'
-                }
-            }
-        });
-
 
         var shown = '<?php
             if(isset($_SESSION['has_shown'])){
@@ -345,15 +251,103 @@ include "include/scripts.php";
     });
 
     $(document).on('submit', '#modalForm', function(event) {
+        $('input').on('input', function () {
+            // Enable the button when a change occurs
+            $('#insertdata').prop('disabled', false);
+            $('.error').remove();
+        });
+
         event.preventDefault();
-        if ($(this).valid()) {
+        var id = $('#id').val();
+        var name = $('#name').val();
+        var lastname = $('#lastname').val();
+        var email = $('#email').val();
+        var birthday = $('#birthday').val();
+        var password = $('#password').val();
+        var confirmPassword = $('#confirmPassword').val();
+        var isValid = true;
+        const numbers = /[0-9]/;
+        const regularExpression = /^(?=.*[a-zA-Z])(?=.*[0-9!@#$%^&*]).{8,16}$/;
+        var operation = $('#operation').val();
+
+
+        if (name === "") {
+            $('#name').after('<div class="error">Please enter your name</div>');
+            isValid = false;
+        } else if (numbers.test(name)) {
+            $('#name').after('<div class="error">Name must contain only letters</div>');
+            isValid = false;
+        }
+
+        if (lastname === "") {
+            $('#lastname').after('<div class="error">Please enter your lastname</div>');
+            isValid = false;
+        } else if (numbers.test(lastname)) {
+            $('#lastname').after('<div class="error">Lastname must contain only letters</div>');
+            isValid = false;
+        }
+
+
+        if (email === "") {
+            $('#email').after('<div class="error">Please enter your email</div>');
+            isValid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+            $('#email').after('<div class="error">Please enter a valid email</div>');
+            isValid = false;
+        }
+
+
+        if (birthday === "") {
+            $('#birthday').after('<div class="error">Please enter your birthday</div>');
+            isValid = false;
+        }
+        else if(getAge(birthday) < 18){
+            $('#birthday').after('<div class="error">You should be over 18</div>');
+            isValid = false;
+        }
+
+        if (operation === "Save") {
+            if (password === "") {
+                $('#password').after('<div class="error">Please enter your password</div>');
+                isValid = false;
+            }else if (password.length < 8) {
+                $('#password').after('<div class="error">Password is expected to be 8 characters</div>');
+                isValid = false;
+            } else if (!regularExpression.test(password)) {
+                $('#password').after('<div class="error">Password should contain atleast one number, one special character and one letter</div>');
+                isValid = false;
+            }
+            if (confirmPassword === "") {
+                $('#confirmPassword').after('<div class="error">Please confirm your password</div>');
+                isValid = false;
+            }
+        }
+        if (operation === "Edit") {
+            if (password !== "") {
+                if (password.length < 8) {
+                    $('#password').after('<div class="error">Password is expected to be 8 characters</div>');
+                    isValid = false;
+                } else if (!regularExpression.test(password)) {
+                    $('#password').after('<div class="error">Password should contain atleast one number, one special character and one letter</div>');
+                    isValid = false;
+                }
+            }
+        }
+
+        if (password !== confirmPassword) {
+            $('#confirmPassword').after('<div class="error">Password do not match</div>');
+            isValid = false;
+        }
+
+
+        if(isValid){
             $.ajax({
                 url: '../inspina/backend/actionTable.php',
                 method: 'POST',
                 data: new FormData(this),
                 contentType: false,
                 processData: false,
-                success: function(data) {
+                success:function (data){
                     if (data.includes('Email already exists!')) {
                         $('#email').after('<div class="error">' + data + '</div>');
                         $('#myModal').modal('show');
@@ -361,8 +355,8 @@ include "include/scripts.php";
                         $('#message').html('<div class="error" style="color: green!important;">' + data + '</div>');
                     }
                     closeModal();
-                },
-            });
+                }
+            })
         }
     });
 
@@ -380,15 +374,10 @@ include "include/scripts.php";
         $('#member_id').val(member_id);
         $('#insertdata').val("Update");
         $('#operation').val("Edit");
-        $('#password').closest('.form-group').hide();
-        $('#confirmPassword').closest('.form-group').hide();
         openModal();
     });
 
     $(document).on('click', '#add_button' ,function(){
-        $('.modal-title').text("Add New Details");
-        $('#insertdata').val("Save");
-        $('#operation').val("Save");
         openModal();
     })
 
@@ -429,8 +418,6 @@ include "include/scripts.php";
 
     function closeModal(){
         $('#modalForm')[0].reset();
-        $('#password').closest('.form-group').show();
-        $('#confirmPassword').closest('.form-group').show();
         $('#message').html('');
         $('.error').remove();
         $('#myModal').hide();
@@ -445,6 +432,17 @@ include "include/scripts.php";
     function openModal(){
         $('body').addClass('modal-open').append('<div class="modal-backdrop in"></div>');
         $('#myModal').show();
+    }
+
+    function getAge(DOB) {
+        var today = new Date();
+        var birthDate = new Date(DOB);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
     }
 
 </script>

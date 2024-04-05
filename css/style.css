@@ -4240,7 +4240,8 @@ a.close-canvas-menu:hover {
   float: left;
 }
 .modal-backdrop {
-  z-index: 2040 !important;
+  /*z-index: 2040 !important;*/
+  background-color: gray;
 }
 .modal {
   z-index: 2050 !important;
