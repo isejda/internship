@@ -122,30 +122,24 @@ include "include/validation.php";
                                     <p id="message"></p>
                                     <div class="form-group">
                                         <label class="small mb-1" for="name">First name</label>
-                                        <input class="form-control" id="name" name = 'name' type="text" placeholder="Enter your first name" value="">
-                                        <div class="error" id="error">
-                                        </div>
+                                        <input class="form-control" id="name" name = 'name' type="text" placeholder="Enter your first name" value="" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="lastname">Last name</label>
-                                        <input class="form-control" id="lastname" name = 'lastname'  type="text" placeholder="Enter your last name" value="">
-                                        <div class="error">
-                                        </div>
+                                        <input class="form-control" id="lastname" name = 'lastname'  type="text" placeholder="Enter your last name" value="" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="email">Email address</label>
-                                        <input class="form-control" id="email" name = 'email' type="email" placeholder="Enter your email address" value="">
+                                        <input class="form-control" id="email" name = 'email' type="email" placeholder="Enter your email address" value="" required>
                                         <div class="error">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="birthday">Birthday</label>
-                                        <input class="form-control" id="birthday" name = 'birthday' type="date" value="">
-                                        <div class="error">
-                                        </div>
+                                        <input class="form-control" id="birthday" name = 'birthday' type="date" value="" required>
                                     </div>
 
                                     <div class="form-group">
@@ -158,17 +152,13 @@ include "include/validation.php";
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="password">New password</label>
-                                        <input class="form-control" id="password" type="password" name="password" placeholder="Enter your new password" value="">
-                                        <div class="error">
-                                        </div>
+                                        <input class="form-control" id="password" type="password" name="password" placeholder="Enter your new password" value="" required>
                                     </div>
                                     <input type="hidden" name="page" value="display">
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="confirmPassword">Confirm new password</label>
-                                        <input class="form-control" id="confirmPassword" type="password" name="confirmPassword" placeholder="Enter your new password" value="">
-                                        <div class="error">
-                                        </div>
+                                        <input class="form-control" id="confirmPassword" type="password" name="confirmPassword" placeholder="Enter your new password" value="" required>
                                     </div>
                                     <input type="hidden" name="page" value="display">
                                 </div>
@@ -196,6 +186,7 @@ include "include/validation.php";
     </div>
 </div>
 
+
 <?php
 include "include/scripts.php";
 ?>
@@ -204,6 +195,7 @@ include "include/scripts.php";
 
 <script>
     let dataTable;
+    var validator;
     $(document).ready(function (){
         dataTable = $('#memListTable').DataTable({
             "processing":true,
@@ -246,7 +238,7 @@ include "include/scripts.php";
             return hasCapital && hasLowercase && hasNumber && hasSpecialCharacter;
         });
 
-        $( "#modalForm" ).validate({
+        validator = $( "#modalForm" ).validate({
             rules: {
                 name: {
                     required: true,
@@ -262,7 +254,6 @@ include "include/scripts.php";
                 },
                 birthday: {
                     required: true,
-                    date: true,
                     over18: true
                 },
                 password: {
@@ -286,7 +277,6 @@ include "include/scripts.php";
                 },
                 birthday: {
                     required: 'Birthday is mandatory',
-                    date: "Please enter a valid date.",
                     over18: "You must be 18 or older."
                 },
                 email: {
@@ -305,6 +295,20 @@ include "include/scripts.php";
             }
         });
 
+        $('input').on('input click', function() {
+            var fieldName = $(this).attr('name');
+            var errorElement = $('#' + fieldName + '-error');
+
+            if (validator.element($(this))) {
+                errorElement.addClass('hidden');
+                $('#' + fieldName + '-error').addClass('hidden');
+            } else {
+                errorElement.removeClass('hidden');
+                $('#' + fieldName + '-error').removeClass('hidden');
+            }
+        });
+
+
         var shown = '<?php
             if(isset($_SESSION['has_shown'])){
                 echo $_SESSION['has_shown'];
@@ -313,6 +317,7 @@ include "include/scripts.php";
                 echo 'false';
             }
             ?>';
+
         if (shown !== 'true') {
             setTimeout(function() {
                 toastr.options = {
@@ -330,10 +335,74 @@ include "include/scripts.php";
 
     });
 
+    // $(document).ready('input', '#name', function ()){
+    //     if ($(this).valid()) {
+    //         $('#name-error').remove();
+    //     }
+    // }
+
     $(document).on('click', '#btn_close', function () {
         resetFormValidation();
         closeModal();
     })
+
+/*
+    $(document).on('input keyup', '.error', function () {
+        var formFields = ['name', 'lastname', 'email', 'birthday', 'password', 'confirmPassword'];
+
+        formFields.forEach(function(field) {
+            var $input = $('#' + field);
+            var $error = $('#' + field + '-error');
+
+            if ($input.valid()) {
+                $error.addClass('hidden');
+            } else {
+                $error.removeClass('hidden');
+            }
+        });
+    });*/
+
+/*
+    $(document).on('input keyup', '.error', function () {
+        if ($('#name').valid()){
+            $('#name-error').addClass('hidden')
+        } else {
+            $('#name-error').removeClass('hidden')
+        }
+
+        if ($('#lastname').valid()){
+            $('#lastname-error').addClass('hidden')
+        } else {
+            $('#lastname-error').removeClass('hidden')
+        }
+
+        if ($('#email').valid()){
+            $('#email-error').addClass('hidden')
+        } else {
+            $('#email-error').removeClass('hidden')
+        }
+
+        if ($('#birthday').valid()){
+            $('#birthday-error').addClass('hidden')
+        } else {
+            $('#birthday-error').removeClass('hidden')
+        }
+
+        if ($('#password').valid()){
+            $('#password-error').addClass('hidden')
+        } else {
+            $('#password-error').removeClass('hidden')
+        }
+
+        if ($('#confirmPassword').valid()){
+            $('#confirmPassword-error').addClass('hidden')
+        } else {
+            $('#confirmPassword-error').removeClass('hidden')
+        }
+
+    })
+*/
+
 
     $(document).on('click', '#btn_dismiss', function () {
         resetFormValidation();
@@ -352,11 +421,11 @@ include "include/scripts.php";
                 success: function(data) {
                     if (data.includes('Email already exists!')) {
                         $('#email').after('<div class="error">' + data + '</div>');
-                        $('#myModal').modal('show');
+                        $('.modal-backdrop').remove();
+                        openModal();
                     } else {
-                        $('#message').html('<div class="error" style="color: green!important;">' + data + '</div>');
+                        closeModal();
                     }
-                    closeModal();
                 },
             });
         }
@@ -438,16 +507,21 @@ include "include/scripts.php";
         dataTable.ajax.reload();
     }
 
+    // function openModal() {
+    //     $('body').addClass('modal-open').append('<div class="modal-backdrop"></div>');
+    //     $('#myModal').show();
+    //     $('.modal-backdrop').addClass('in');
+    // }
+
     function openModal(){
         $('body').addClass('modal-open').append('<div class="modal-backdrop in"></div>');
         $('#myModal').show();
     }
 
     function resetFormValidation() {
-        $('#modalForm').validate().resetForm();
+        validator.resetForm();
         $('#modalForm .error').remove();
     }
-
 
 </script>
 
