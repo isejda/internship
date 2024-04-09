@@ -3,12 +3,23 @@ session_start();
 require_once(__DIR__ . '/../include/conn.php');
 // insert record
 global $conn;
+
+//if (isset($_SESSION['role'])) {
+//print_r($_SESSION['role']);
+//exit;
+//}
+
 if(isset($_POST['operation'])){
     if($_POST['operation'] == "Insert") {
 //In other words, $_REQUEST is an array containing data from $_GET, $_POST, and $_COOKIE.
 
         $request = $_REQUEST;
+        $userRole = $_SESSION['role'];
+        $userId = $_SESSION['id'];
+//        print_r($userId);
+//        print_r($userRole);
 
+        $sql= "";
 //create col like table in database
         $col = array(
             0 => 'id',
@@ -19,14 +30,35 @@ if(isset($_POST['operation'])){
             5 => 'role'
         );
 
-        $sql = "SELECT * FROM users WHERE role = 'user'";
+        if ($userRole == 'admin') {
+            // Fetch data for admin (all users)
+            $sql = "SELECT * FROM users WHERE role = 'user'";
+        }elseif ($userRole == 'user') {
+            // Fetch data for manager (users reporting to the manager)
+            $sql = "SELECT u.*
+                    FROM users u
+                    INNER JOIN hierarchy h ON u.id = h.subordinate_id
+                    WHERE h.supervisor_id = $userId OR u.id = $userId";
+        }
+
+
         $query = mysqli_query($conn, $sql);
         $totalData = mysqli_num_rows($query);
         $totalFilter = $totalData;
 
-        $sql = "SELECT * FROM users WHERE role = 'user'";
+        if ($userRole == 'admin') {
+            // Fetch data for admin (all users)
+            $sql = "SELECT * FROM users WHERE role = 'user'";
+        }elseif ($userRole == 'user') {
+            // Fetch data for manager (users reporting to the manager)
 
-//searchi funksional
+            $sql = "SELECT u.*
+                    FROM users u
+                    INNER JOIN hierarchy h ON u.id = h.subordinate_id
+                    WHERE h.supervisor_id = $userId OR u.id = $userId";
+        }
+
+        //searchi funksional
         if (!empty($request['search']['value'])) {
             $sql .= " AND (id Like '%" . $request['search']['value'] . "%' ";
             $sql .= " OR lastname Like '%" . $request['search']['value'] . "%' ";
@@ -59,19 +91,56 @@ if(isset($_POST['operation'])){
         $query = mysqli_query($conn, $sql);
 
         $data = array();
+        // Variable to track whether the logged-in user data has been added to the table
+        $loggedInUserAdded = false;
 
-        while ($row = mysqli_fetch_array($query)) {
-            $subdata = array();
-            $subdata[] = $row[0]; //id
-            $subdata[] = $row[1]; //name
-            $subdata[] = $row[2]; //lastname
-            $subdata[] = $row[3]; //email
-            $subdata[] = $row[4]; //birthday
-            $subdata[] = $row[5]; //role
-            $subdata[] = '<button type="button" name="update" id="' . $row[0] . '" class="btn btn-w-m btn-primary btn-xm update-user-btn"><i class="fa fa-edit">&nbsp;</i>Edit</button>
+        if ($userRole == 'admin') {
+            // Fetch data for admin (all users)
+            while ($row = mysqli_fetch_array($query)) {
+                $subdata = array();
+                $subdata[] = $row[0]; //id
+                $subdata[] = $row[1]; //name
+                $subdata[] = $row[2]; //lastname
+                $subdata[] = $row[3]; //email
+                $subdata[] = $row[4]; //birthday
+                $subdata[] = $row[5]; //role
+                $subdata[] = '<button type="button" name="update" id="' . $row[0] . '" class="btn btn-w-m btn-primary btn-xm update-user-btn"><i class="fa fa-edit">&nbsp;</i>Edit</button>
                   <button type="button" name="delete" id="' . $row[0] . '" class="btn btn-w-m btn-danger btn-xm delete-user-btn" ><i class="fa fa-trash">&nbsp;</i>Delete</button>';
-            /*                  <a href="backend/delete.php?deleteid='.$row[0].'" onclick="return confirm(\'Are you sure?\')" class="btn btn-w-m btn-danger btn-xm"><i class="fa fa-trash">&nbsp;</i>Delete</a>';*/
-            $data[] = $subdata;
+                /*                  <a href="backend/delete.php?deleteid='.$row[0].'" onclick="return confirm(\'Are you sure?\')" class="btn btn-w-m btn-danger btn-xm"><i class="fa fa-trash">&nbsp;</i>Delete</a>';*/
+
+                if ($row[0] == $userId && !$loggedInUserAdded) {
+                    $subdata = array_map(function($item) {
+                        return '<em><strong>' . $item . '</strong></em>';
+                        }, $subdata);
+                    $loggedInUserAdded = true;
+                    array_unshift($data, $subdata);
+                } else {
+                    $data[] = $subdata;
+                }
+            }
+        }elseif ($userRole == 'user') {
+            // Fetch data for manager (users reporting to the manager)
+
+            while ($row = mysqli_fetch_array($query)) {
+                $subdata = array();
+                $subdata[] = $row[0]; //id
+                $subdata[] = $row[1]; //name
+                $subdata[] = $row[2]; //lastname
+                $subdata[] = $row[3]; //email
+                $subdata[] = $row[4]; //birthday
+                $subdata[] = $row[5]; //role
+
+                if ($row[0] == $userId && !$loggedInUserAdded) {
+                    $subdata = array_map(function($item) {
+                        return '<em><strong>' . $item . '</strong></em>';
+                    }, $subdata);
+                    $loggedInUserAdded = true;
+                    array_unshift($data, $subdata);
+                } else {
+                    $data[] = $subdata;
+                }
+            }
+
         }
 
 

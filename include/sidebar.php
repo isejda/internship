@@ -36,11 +36,9 @@ include 'include/getdata.php';
             </li>
 
 
-            <?php if($_SESSION['role'] === 'admin'){ ?>
                 <li>
-                    <a href="dashboard.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashbord</span></a>
+                    <a href="dashboard.php"><i class="fa fa-th-large"></i> <span class="nav-label">Users</span></a>
                 </li>
-            <?php } ?>
         </ul>
 
     </div>

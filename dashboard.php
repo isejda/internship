@@ -60,12 +60,16 @@ include "include/validation.php";
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
+            <?php
+            if($_SESSION['role'] == 'admin'){?>
+                <div align="left">
+                    <button type="button" id="add_button" class="btn btn-primary">
+                        <i class="fa fa-plus">&nbsp;</i> Add Member
+                    </button>
+                </div>
+            <?php }
+            ?>
 
-            <div align="left">
-                <button type="button" id="add_button" class="btn btn-primary">
-                    <i class="fa fa-plus">&nbsp;</i> Add Member
-                </button>
-            </div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
@@ -82,7 +86,11 @@ include "include/validation.php";
                                         <th>Email</th>
                                         <th>Birthday</th>
                                         <th>Role</th>
-                                        <th>Action</th>
+                                        <?php
+                                        if($_SESSION['role'] == 'admin'){?>
+                                            <th>Action</th>
+                                        <?php }
+                                        ?>
                                     </tr>
                                     </thead>
 
@@ -94,7 +102,11 @@ include "include/validation.php";
                                         <th>Email</th>
                                         <th>Birthday</th>
                                         <th>Role</th>
-                                        <th>Action</th>
+                                        <?php
+                                        if($_SESSION['role'] == 'admin'){?>
+                                            <th>Action</th>
+                                        <?php }
+                                        ?>
                                     </tr>
                                     </tfoot>
 
@@ -295,7 +307,7 @@ include "include/scripts.php";
             }
         });
 
-        $('input').on('input click', function() {
+        $('#modalForm input').on('input click', function() {
             var fieldName = $(this).attr('name');
             var errorElement = $('#' + fieldName + '-error');
 
@@ -507,11 +519,6 @@ include "include/scripts.php";
         dataTable.ajax.reload();
     }
 
-    // function openModal() {
-    //     $('body').addClass('modal-open').append('<div class="modal-backdrop"></div>');
-    //     $('#myModal').show();
-    //     $('.modal-backdrop').addClass('in');
-    // }
 
     function openModal(){
         $('body').addClass('modal-open').append('<div class="modal-backdrop in"></div>');
