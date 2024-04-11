@@ -61,7 +61,7 @@ include "include/validation.php";
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <?php
-            if($_SESSION['role'] == 'admin'){?>
+            if($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'manager'){?>
                 <div align="left">
                     <button type="button" id="add_button" class="btn btn-primary">
                         <i class="fa fa-plus">&nbsp;</i> Add Member
@@ -88,7 +88,7 @@ include "include/validation.php";
                                         <th>Role</th>
                                         <?php
                                         if($_SESSION['role'] == 'admin'){?>
-                                            <th>Action</th>
+                                            <th></th>
                                         <?php }
                                         ?>
                                     </tr>
@@ -104,7 +104,7 @@ include "include/validation.php";
                                         <th>Role</th>
                                         <?php
                                         if($_SESSION['role'] == 'admin'){?>
-                                            <th>Action</th>
+                                            <th></th>
                                         <?php }
                                         ?>
                                     </tr>
@@ -154,13 +154,25 @@ include "include/validation.php";
                                         <input class="form-control" id="birthday" name = 'birthday' type="date" value="" required>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label class="small mb-1" for="role">Role</label>
-                                        <select class="form-control" name="role" id="role">
-                                            <option value="admin">Admin</option>
-                                            <option value="user" selected>User</option>
-                                        </select>
-                                    </div>
+                                        <div class="form-group">
+                                            <label class="small mb-1" for="role">Role</label>
+                                            <select class="form-control" name="role" id="role">
+                                                <option value="admin">Admin</option>
+                                                <option value="manager">Manager</option>
+                                                <option value="user" >User</option>
+                                            </select>
+                                        </div>
+                                    <?php
+                                    if($_SESSION['role'] == 'manager'){?>
+                                        <div class="form-group">
+                                            <label class="small mb-1" for="role">Role</label>
+                                            <select class="form-control" name="role" id="role" readonly="">
+                                                <option value="user" selected>User</option>
+                                            </select>
+                                        </div>
+                                    <?php }
+                                    ?>
+
 
                                     <div class="form-group">
                                         <label class="small mb-1" for="password">New password</label>
@@ -212,6 +224,11 @@ include "include/scripts.php";
         dataTable = $('#memListTable').DataTable({
             "processing":true,
             "serverSide": true,
+            //make action column unordable
+            "columnDefs": [
+                { "orderable": false,
+                    "targets": -1 }
+            ],
             "ajax":{
                 url: '../inspina/backend/actionTable.php',
                 method:"POST",
