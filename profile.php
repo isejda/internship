@@ -124,7 +124,7 @@ if (isset($_SESSION['profile_form_validations'])) {
                                     </div>
                                 <?php endif; ?>
 
-                                <?php if ($data['role'] === 'user'): ?>
+                                <?php if ($data['role'] === 'user' || $data['role'] === 'manager' ): ?>
                                     <div class="ibox-title">
                                         <h5>Contact an Admin</h5>
                                         <div class="ibox-tools">

@@ -162,6 +162,7 @@ if(isset($_POST['operation'])){
             // Fetch data for admin (all users)
             while ($row = mysqli_fetch_array($query)) {
                 $subdata = array();
+                $subdata[] = '';
                 $subdata[] = $row[0]; //id
                 $subdata[] = $row[1]; //name
                 $subdata[] = $row[2]; //lastname
@@ -179,6 +180,7 @@ if(isset($_POST['operation'])){
                                 <li>
                                 <button type="button" name="delete" id="' . $row[0] . '" class="btn btn-w-m btn-xm delete-user-btn" ><i class="fa fa-trash">&nbsp;</i>Delete</button>
                                 </li>
+                                
                             </ul>
                             </div>
                 

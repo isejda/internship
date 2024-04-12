@@ -80,6 +80,7 @@ include "include/validation.php";
                                 <table class="table table-striped table-bordered table-hover dataTables-example" id="memListTable" cellspacing="0" width="100%">
                                     <thead>
                                     <tr>
+                                        <th></th>
                                         <th>ID</th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
@@ -96,6 +97,7 @@ include "include/validation.php";
 
                                     <tfoot>
                                     <tr>
+                                        <th></th>
                                         <th>ID</th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
@@ -236,8 +238,34 @@ include "include/scripts.php";
                 data: function (data){
                     data['operation'] = 'Insert';
                 }
+            },
+            "rowCallback": function(row, data) {
+                // Add a button to each row to toggle child row
+                $(row).addClass('parent').children('td:first').html('<i class="fa fa-plus-square"></i>');
             }
         });
+        $('#memListTable tbody').on('click', 'td.parent', function () {
+            var tr = $(this).closest('tr');
+            var row = dataTable.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                // Open this row
+                var rowData = row.data();
+                // Assuming the detailed information is in rowData[0]
+                row.child(formatChildRow(rowData[0])).show();
+                tr.addClass('shown');
+            }
+        });
+        function formatChildRow(data) {
+            // Customize this function to format the content of the child row
+            var childRowContent = '<div>Detailed information: ' + data + '</div>';
+            return childRowContent;
+        };
+
 
         jQuery.validator.setDefaults({
             debug: true,
