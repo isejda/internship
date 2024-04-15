@@ -225,7 +225,6 @@ include "include/scripts.php";
         dataTable = $('#memListTable').DataTable({
             "processing":true,
             "serverSide": true,
-            //make action column unordable
             "columnDefs": [{
                 "orderable": false,
                 "targets": -1

@@ -226,33 +226,164 @@ if(isset($_POST['operation'])){
     }
 
     if($_POST['operation'] == "years") {
-        $username = $_POST['username'];
+/*        $name = $_POST['name'] ?? null;
+        $boolan = true;
+        $name = $name ?: 'No Name';
+        $name = $name || 'No Name';
+        $number = 2;
+        if ($number === true) {
 
+        }
+        echo $boolan ? 'Yes' : 'No';*/
+        $username = $_POST['username'];
+        $sql="WITH difference_in_seconds AS (
+                    SELECT
+                    id,
+                    username,
+                    data_hyrje,
+                    ora_hyrje,
+        CASE WHEN ora_dalje = '00:00:00' THEN '24:00:00' ELSE ora_dalje END AS ora_dalje_adjusted,
+        CASE
+            WHEN ora_dalje = '00:00:00' THEN
+                TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        TIMESTAMPADD(DAY, 1, ora_dalje)
+                )
+            ELSE
+                TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        ora_dalje
+                )
+            END AS seconds
+            FROM hyrje_dalje_kryesore
+        ),
+
+        summed_differences AS (
+            SELECT
+                username,
+                YEAR(data_hyrje) AS year,
+                SUM(seconds) AS total_seconds
+            FROM difference_in_seconds
+            GROUP BY username, YEAR(data_hyrje)
+        )
+
+        SELECT
+            year,
+            FLOOR(SUM(total_seconds) / 3600) as hours,
+            FLOOR((SUM(total_seconds) % 3600) / 60) as minutes,
+            SUM(total_seconds) % 60 as seconds
+        FROM summed_differences
+        WHERE username = '$username'
+        GROUP BY year;";
+/*
         $sql = "SELECT DISTINCT YEAR(hdk.data_hyrje) AS work_year
                 FROM hyrje_dalje_kryesore hdk
                 JOIN users u ON hdk.username = u.user_username
-                WHERE u.user_username = '$username'";
+                WHERE u.user_username = '$username'";*/
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
-            // Initialize an array to store the years
-            $years = array();
-
-            // Fetch each row from the result set
+            $data = array();
             while ($row = mysqli_fetch_assoc($result)) {
-                // Add the year to the array
+                $data[] = $row;
+            }
+/*            echo "<pre>";
+            print_r($data);
+            echo "</pre>";*/
+            echo json_encode($data);
+        } else {
+            echo json_encode(array());
+        }
+
+/*        if ($result) {
+            $years = array();
+            // marrim cdo rresht nga result
+            while ($row = mysqli_fetch_assoc($result)) {
+                // shtojme vitin ne array
                 $years[] = $row['work_year'];
             }
 
-            // Send the years data as JSON
+            // dergo te dhenat
             echo json_encode($years);
         } else {
-            // If there are no results or an error occurred, send an empty array
+            // dergo nje array bosh ne rast problemi
+            echo json_encode(array());
+        }*/
+
+    }
+    if($_POST['operation'] == "Months") {
+        $username = $_POST['username'];
+        $year = $_POST['year'];
+
+        $sql="WITH difference_in_seconds AS (
+    SELECT
+        id,
+        username,
+        data_hyrje,
+        ora_hyrje,
+        CASE WHEN ora_dalje = '00:00:00' THEN '24:00:00' ELSE ora_dalje END AS ora_dalje_adjusted,
+        CASE
+            WHEN ora_dalje = '00:00:00' THEN
+                TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        TIMESTAMPADD(DAY, 1, ora_dalje)
+                )
+            ELSE
+                TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        ora_dalje
+                )
+            END AS seconds
+    FROM hyrje_dalje_kryesore
+),
+
+     summed_differences AS (
+         SELECT
+             username,
+             YEAR(data_hyrje) AS year,
+             MONTH(data_hyrje) AS month,
+             SUM(seconds) AS total_seconds
+         FROM difference_in_seconds
+         WHERE username = '$username' AND year = '$year'
+         GROUP BY username, YEAR(data_hyrje), MONTH(data_hyrje)
+     )
+
+SELECT
+    year,
+    month,
+    FLOOR(SUM(total_seconds) / 3600) as hours,
+    FLOOR((SUM(total_seconds) % 3600) / 60) as minutes,
+    SUM(total_seconds) % 60 as seconds
+FROM summed_differences
+GROUP BY year, month;";
+        /*
+                $sql = "SELECT DISTINCT YEAR(hdk.data_hyrje) AS work_year
+                        FROM hyrje_dalje_kryesore hdk
+                        JOIN users u ON hdk.username = u.user_username
+                        WHERE u.user_username = '$username'";*/
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $data = array();
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
+            /*            echo "<pre>";
+                        print_r($data);
+                        echo "</pre>";*/
+            echo json_encode($data);
+        } else {
             echo json_encode(array());
         }
+
     }
 
-}
+
+    }
 
 
 

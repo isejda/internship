@@ -221,43 +221,146 @@ include "include/scripts.php";
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+<style>
+    td.details-control {
+        background: url('https://datatables.net/examples/resources/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
+    }
 
+    .tabela {
+        font-size: 12px;
+        width: 90%;
+        max-width: 900px;
+        margin: 0 auto;
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    .tabela th,
+    .tabela td {
+        border: 1px solid black;
+        padding: 8px;
+    }
+
+</style>
 <script>
     let dataTable;
     var validator;
     $(document).ready(function (){
         function format(d) {
-            // `d` is the original data object for the row
             let username = d.username;
 
-            // Create a unique ID for the table
+            //unique ID
             let tableId = 'table_' + username;
 
-            // Construct the HTML for the table
-            let tableContent = '<table id="' + tableId + '" class="table table-striped table-bordered table-hover">' +
-                '<thead><tr><th>Year</th></tr></thead>' +
+            let tableContent = '<table id="' + tableId + '" class="table table-bordered table-hover tabela">' +
+                '<thead class="thead-dark"><tr><th></th><th>Year</th><th>Hours worked</th><th>Minutes worked</th><th>Seconds worked</th></tr></thead>' +
                 '<tbody>';
 
             let ajaxData = {
-                operation: 'years', // Set the operation to 'years'
-                username: username // Include the username parameter
+                operation: 'years',
+                username: username
             };
 
-            // Make an AJAX call to fetch the years for the specific user
             $.ajax({
-                url: '../internship/backend/actionTablee.php',
+                url: '../inspina/backend/actionTablee.php',
                 type: 'POST',
                 data: ajaxData,
                 dataType: 'json',
                 success: function(response) {
-                    // Populate the table with the retrieved years
-                    response.forEach(function(year) {
-                        tableContent += '<tr><td>' + year + '</td></tr>';
+
+                    response.forEach(function(data) {
+                        tableContent += '<tr><td></td><td>' + data.year + '</td><td>' + data.hours + '</td><td>' + data.minutes + '</td><td>' + data.seconds + '</td></tr>';
                     });
                     tableContent += '</tbody></table>';
-
                     // Show the table inside the row
                     $('#' + tableId + '_placeholder').html(tableContent).show(); // Show the content after updating
+
+                    let table = new DataTable('#' + tableId, {
+                        "paging": false,
+                        "searching": false,
+                        "processing": true,
+
+                        columns: [
+                            {
+                                className: 'details-control',
+                                orderable: false,
+                                data: null,
+                                defaultContent: ''
+                            },
+                            { data: 'year' },
+                            { data: 'hours' },
+                            { data: 'minutes' },
+                            { data: 'seconds' }
+                        ],
+                        order: [[1, 'asc']]
+                    });
+
+                    $('#' + tableId).on('click', 'td.details-control', function () {
+                        var tr = $(this).closest('tr');
+                        var row = table.row( tr );
+
+                        if ( row.child.isShown() ) {
+                            // This row is already open - close it
+                            row.child.hide();
+                            tr.removeClass('shown');
+                        }
+                        else {
+                            // Open this row
+                            row.child( format(row.data()) ).show();
+                            tr.addClass('shown');
+                        }
+                    });
+
+
+                    function format(e) {
+                        let year = e.year;
+
+                        //unique ID
+                        let tableId = 'table_' + year;
+
+                        let tableContent = '<table id="' + tableId + '" class="table table-bordered table-hover tabela">' +
+                            '<thead class="thead-dark"><tr><th></th><th>Month</th><th>Hours worked</th><th>Minutes worked</th><th>Seconds worked</th></tr></thead>' +
+                            '<tbody>';
+
+                        let ajaxData = {
+                            operation: 'Months',
+                            year: year
+                        };
+
+                        $.ajax({
+                            url: '../inspina/backend/actionTablee.php',
+                            type: 'POST',
+                            data: ajaxData,
+                            dataType: 'json',
+                            success: function(response) {
+
+                                response.forEach(function(data) {
+                                    tableContent += '<tr><td></td><td>' + data.month + '</td><td>' + data.hours + '</td><td>' + data.minutes + '</td><td>' + data.seconds + '</td></tr>';
+                                });
+                                tableContent += '</tbody></table>';
+                                // Show the table inside the row
+                                $('#' + tableId + '_placeholder').html(tableContent).show(); // Show the content after updating
+
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr);
+                                console.error(status);
+                                console.error(error);
+                                $('#' + tableId + '_placeholder').html('Error fetching years.');
+                            }
+
+                        });
+
+                        // Create a placeholder for the table
+                        let placeholderContent = '<div id="' + tableId + '_placeholder">Loading results...</div>';
+                        return placeholderContent;
+                    }
+
+
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr);
@@ -269,10 +372,10 @@ include "include/scripts.php";
             });
 
             // Create a placeholder for the table
-            let placeholderContent = '<div id="' + tableId + '_placeholder">Loading...</div>';
-
+            let placeholderContent = '<div id="' + tableId + '_placeholder">Loading results...</div>';
             return placeholderContent;
         }
+
 
         dataTable = $('#memListTable').DataTable({
             "processing": true,
@@ -284,7 +387,7 @@ include "include/scripts.php";
             }],
 
             "ajax": {
-                url: '../internship/backend/actionTablee.php',
+                url: '../inspina/backend/actionTablee.php',
                 method: "POST",
                 data: function (data) {
                     data['operation'] = 'Insert';
@@ -320,6 +423,7 @@ include "include/scripts.php";
                 row.child(format(row.data())).show();
             }
         });
+
 
 
         jQuery.validator.setDefaults({
@@ -464,7 +568,7 @@ include "include/scripts.php";
         event.preventDefault();
         if ($(this).valid()) {
             $.ajax({
-                url: '../internship/backend/actionTablee.php',
+                url: '../inspina/backend/actionTablee.php',
                 method: 'POST',
                 data: new FormData(this),
                 contentType: false,
@@ -533,7 +637,7 @@ include "include/scripts.php";
                 formData.append('member_id', member_id);
                 formData.append('operation', 'Delete');
                 $.ajax({
-                    url: '../internship/backend/actionTablee.php',
+                    url: '../inspina/backend/actionTablee.php',
                     method: 'POST',
                     data: formData,
                     contentType: false,

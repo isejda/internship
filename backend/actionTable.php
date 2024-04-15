@@ -162,7 +162,6 @@ if(isset($_POST['operation'])){
             // Fetch data for admin (all users)
             while ($row = mysqli_fetch_array($query)) {
                 $subdata = array();
-                $subdata[] = '';
                 $subdata[] = $row[0]; //id
                 $subdata[] = $row[1]; //name
                 $subdata[] = $row[2]; //lastname
