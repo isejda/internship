@@ -84,6 +84,7 @@ include "include/validation.php";
                                         <th>ID</th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
+                                        <th>Username</th>
                                         <th>Email</th>
                                         <th>Birthday</th>
                                         <th>Role</th>
@@ -101,6 +102,7 @@ include "include/validation.php";
                                         <th>ID</th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
+                                        <th>Username</th>
                                         <th>Email</th>
                                         <th>Birthday</th>
                                         <th>Role</th>
@@ -224,47 +226,100 @@ include "include/scripts.php";
     let dataTable;
     var validator;
     $(document).ready(function (){
+        function format(d) {
+            // `d` is the original data object for the row
+            let username = d.username;
+
+            // Create a unique ID for the table
+            let tableId = 'table_' + username;
+
+            // Construct the HTML for the table
+            let tableContent = '<table id="' + tableId + '" class="table table-striped table-bordered table-hover">' +
+                '<thead><tr><th>Year</th></tr></thead>' +
+                '<tbody>';
+
+            let ajaxData = {
+                operation: 'years', // Set the operation to 'years'
+                username: username // Include the username parameter
+            };
+
+            // Make an AJAX call to fetch the years for the specific user
+            $.ajax({
+                url: '../internship/backend/actionTablee.php',
+                type: 'POST',
+                data: ajaxData,
+                dataType: 'json',
+                success: function(response) {
+                    // Populate the table with the retrieved years
+                    response.forEach(function(year) {
+                        tableContent += '<tr><td>' + year + '</td></tr>';
+                    });
+                    tableContent += '</tbody></table>';
+
+                    // Show the table inside the row
+                    $('#' + tableId + '_placeholder').html(tableContent).show(); // Show the content after updating
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr);
+                    console.error(status);
+                    console.error(error);
+                    $('#' + tableId + '_placeholder').html('Error fetching years.');
+                }
+
+            });
+
+            // Create a placeholder for the table
+            let placeholderContent = '<div id="' + tableId + '_placeholder">Loading...</div>';
+
+            return placeholderContent;
+        }
+
         dataTable = $('#memListTable').DataTable({
-            "processing":true,
+            "processing": true,
             "serverSide": true,
-            //make action column unordable
+            // Make action column unorderable
             "columnDefs": [{
                 "orderable": false,
                 "targets": -1
             }],
-            "ajax":{
-                url: '../inspina/backend/actionTable.php',
-                method:"POST",
-                data: function (data){
+
+            "ajax": {
+                url: '../internship/backend/actionTablee.php',
+                method: "POST",
+                data: function (data) {
                     data['operation'] = 'Insert';
                 }
             },
-            "rowCallback": function(row, data) {
-                // Add a button to each row to toggle child row
-                $(row).addClass('parent').children('td:first').html('<i class="fa fa-plus-square"></i>');
-            }
+            "columns": [
+                {
+                    "className": 'dt-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": ''
+                },
+                { "data": "id" },
+                { "data": "name" },
+                { "data": "lastname" },
+                { "data": "username" },
+                { "data": "email" },
+                { "data": "birthday" },
+                { "data": "role",
+                    "orderable": false},
+                { "data": "action" },
+            ]
         });
-        $('#memListTable tbody').on('click', 'td.parent', function () {
-            var tr = $(this).closest('tr');
-            var row = dataTable.row(tr);
+
+        dataTable.on('click', 'td.dt-control', function (e) {
+            let tr = e.target.closest('tr');
+            let row = dataTable.row(tr);
 
             if (row.child.isShown()) {
-                // This row is already open - close it
                 row.child.hide();
-                tr.removeClass('shown');
-            } else {
-                // Open this row
-                var rowData = row.data();
-                // Assuming the detailed information is in rowData[0]
-                row.child(formatChildRow(rowData[0])).show();
-                tr.addClass('shown');
+            }
+            else {
+                row.child(format(row.data())).show();
             }
         });
-        function formatChildRow(data) {
-            // Customize this function to format the content of the child row
-            var childRowContent = '<div>Detailed information: ' + data + '</div>';
-            return childRowContent;
-        };
 
 
         jQuery.validator.setDefaults({
@@ -393,73 +448,11 @@ include "include/scripts.php";
 
     });
 
-    // $(document).ready('input', '#name', function ()){
-    //     if ($(this).valid()) {
-    //         $('#name-error').remove();
-    //     }
-    // }
-
     $(document).on('click', '#btn_close', function () {
         resetFormValidation();
         closeModal();
     })
 
-/*
-    $(document).on('input keyup', '.error', function () {
-        var formFields = ['name', 'lastname', 'email', 'birthday', 'password', 'confirmPassword'];
-
-        formFields.forEach(function(field) {
-            var $input = $('#' + field);
-            var $error = $('#' + field + '-error');
-
-            if ($input.valid()) {
-                $error.addClass('hidden');
-            } else {
-                $error.removeClass('hidden');
-            }
-        });
-    });*/
-
-/*
-    $(document).on('input keyup', '.error', function () {
-        if ($('#name').valid()){
-            $('#name-error').addClass('hidden')
-        } else {
-            $('#name-error').removeClass('hidden')
-        }
-
-        if ($('#lastname').valid()){
-            $('#lastname-error').addClass('hidden')
-        } else {
-            $('#lastname-error').removeClass('hidden')
-        }
-
-        if ($('#email').valid()){
-            $('#email-error').addClass('hidden')
-        } else {
-            $('#email-error').removeClass('hidden')
-        }
-
-        if ($('#birthday').valid()){
-            $('#birthday-error').addClass('hidden')
-        } else {
-            $('#birthday-error').removeClass('hidden')
-        }
-
-        if ($('#password').valid()){
-            $('#password-error').addClass('hidden')
-        } else {
-            $('#password-error').removeClass('hidden')
-        }
-
-        if ($('#confirmPassword').valid()){
-            $('#confirmPassword-error').addClass('hidden')
-        } else {
-            $('#confirmPassword-error').removeClass('hidden')
-        }
-
-    })
-*/
 
 
     $(document).on('click', '#btn_dismiss', function () {
@@ -471,7 +464,7 @@ include "include/scripts.php";
         event.preventDefault();
         if ($(this).valid()) {
             $.ajax({
-                url: '../inspina/backend/actionTable.php',
+                url: '../internship/backend/actionTablee.php',
                 method: 'POST',
                 data: new FormData(this),
                 contentType: false,
@@ -492,13 +485,18 @@ include "include/scripts.php";
     $(document).on('click', '.update-user-btn', function(e){
         e.preventDefault();
         var member_id = $(this).attr("id");
-        var tr = $(this).closest('tr');
+/*        var tr = $(this).closest('tr');
         var data = dataTable.rows(tr).data();
-        $('#id').val(data[0][0]);
-        $('#name').val(data[0][1]);
-        $('#lastname').val(data[0][2]);
-        $('#email').val(data[0][3]);
-        $('#birthday').val(data[0][4]);
+        $('#email').val(data[0][3]);*/
+
+        var rowIndex = dataTable.row($(this).closest('tr')).index();
+        var rowData = dataTable.row(rowIndex).data();
+
+        $('#id').val(rowData.id);
+        $('#name').val(rowData.name);
+        $('#lastname').val(rowData.lastname);
+        $('#email').val(rowData.email);
+        $('#birthday').val(rowData.birthday);
         $('.modal-title').text("Edit Member Details");
         $('#member_id').val(member_id);
         $('#insertdata').val("Update");
@@ -535,7 +533,7 @@ include "include/scripts.php";
                 formData.append('member_id', member_id);
                 formData.append('operation', 'Delete');
                 $.ajax({
-                    url: '../inspina/backend/actionTable.php',
+                    url: '../internship/backend/actionTablee.php',
                     method: 'POST',
                     data: formData,
                     contentType: false,
