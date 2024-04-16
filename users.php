@@ -230,6 +230,27 @@ include "include/scripts.php";
         background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
     }
 
+    td.detail-control {
+        background: url('https://cdn4.iconfinder.com/data/icons/network-and-communication-2-10/48/73-512.png') no-repeat center center;
+        background-size: 20px 20px;
+        cursor: pointer;
+    }
+    tr.shown td.detail-control {
+        background: url('https://cdn4.iconfinder.com/data/icons/network-and-communication-2-10/48/75-512.png') no-repeat center center;
+        background-size: 20px 20px;
+    }
+
+    td.det-control {
+        background: url('https://cdn-icons-png.flaticon.com/512/6684/6684701.png') no-repeat center center;
+        background-size: 20px 20px;
+        cursor: pointer;
+    }
+    tr.shown td.det-control {
+        background: url('https://visualpharm.com/assets/235/Hide-595b40b75ba036ed117d96c6.svg') no-repeat center center;
+        background-size: 20px 20px;
+    }
+
+
     .tabela {
         font-size: 12px;
         width: 90%;
@@ -245,6 +266,46 @@ include "include/scripts.php";
         padding: 8px;
     }
 
+    .tables {
+        font-size: 11px;
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid #ffffff;
+    }
+
+    .tables th,
+    .tables td {
+        border: 1px solid #4b4141;
+        padding: 8px;
+    }
+    .tabel {
+        font-size: 11px;
+        width: 70%;
+        max-width: 700px;
+        margin: 0 auto;
+        border: 1px solid #ffffff;
+    }
+
+    .tabel th,
+    .tabel td {
+        border: 1px solid #4b4141;
+        padding: 8px;
+    }
+
+    .tabelaLast {
+             font-size: 11px;
+             width: 60%;
+             max-width: 600px;
+             margin: 0 auto;
+             border: 1px solid #ffffff;
+    }
+
+    .tabelaLast th,
+    .tabelaLast td {
+        border: 1px solid #4b4141;
+        padding: 8px;
+    }
 </style>
 <script>
     let dataTable;
@@ -256,7 +317,11 @@ include "include/scripts.php";
             //unique ID
             let tableId = 'table_' + username;
 
-            let tableContent = '<table id="' + tableId + '" class="table table-bordered table-hover tabela">' +
+            let tableContent = '<div align="right"> <label for="start-date">Start Date:</label>' +
+                '<input type="date" id="start-date">' +
+                '<br><label for="end-date">End Date:</label>' +
+                '<input type="date" id="end-date">' +
+                '<table id="' + tableId + '" class="table table-bordered table-hover tabela">' +
                 '<thead class="thead-dark"><tr><th></th><th>Year</th><th>Hours worked</th><th>Minutes worked</th><th>Seconds worked</th></tr></thead>' +
                 '<tbody>';
 
@@ -317,19 +382,24 @@ include "include/scripts.php";
 
 
                     function format(e) {
+                        let username = d.username;
                         let year = e.year;
 
                         //unique ID
                         let tableId = 'table_' + year;
 
-                        let tableContent = '<table id="' + tableId + '" class="table table-bordered table-hover tabela">' +
+                        let tableContent = '<table id="' + tableId + '" class="table table-bordered table-hover tables">' +
                             '<thead class="thead-dark"><tr><th></th><th>Month</th><th>Hours worked</th><th>Minutes worked</th><th>Seconds worked</th></tr></thead>' +
                             '<tbody>';
 
                         let ajaxData = {
                             operation: 'Months',
-                            year: year
+                            year: year,
+                            username: username
                         };
+
+                        //bejme nje array me muajt
+                        const monthsName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
                         $.ajax({
                             url: '../inspina/backend/actionTablee.php',
@@ -339,11 +409,232 @@ include "include/scripts.php";
                             success: function(response) {
 
                                 response.forEach(function(data) {
-                                    tableContent += '<tr><td></td><td>' + data.month + '</td><td>' + data.hours + '</td><td>' + data.minutes + '</td><td>' + data.seconds + '</td></tr>';
+                                    let monthName = monthsName[data.month - 1]
+                                    tableContent += '<tr><td></td><td>' + monthName + '</td><td>' + data.hours + '</td><td>' + data.minutes + '</td><td>' + data.seconds + '</td></tr>';
                                 });
                                 tableContent += '</tbody></table>';
                                 // Show the table inside the row
                                 $('#' + tableId + '_placeholder').html(tableContent).show(); // Show the content after updating
+
+                                let tableMonth = new DataTable('#' + tableId, {
+
+                                    "paging": false,
+                                    "searching": false,
+                                    "processing": true,
+                                    responsive: {
+                                        details: {
+                                            type: 'column',
+                                            target: 'tr'
+                                        }
+                                    },
+                                    columns: [
+                                        {
+                                            className: 'detail-control',
+                                            orderable: false,
+                                            data: null,
+                                            defaultContent: ''
+                                        },
+                                        { data: 'month'},
+                                        { data: 'hours' },
+                                        { data: 'minutes' },
+                                        { data: 'seconds' }
+                                    ],
+
+                                    order: {
+                                        data: 'month',
+                                        dir: 'asc'
+                                    }
+                                });
+
+                                $('#' + tableId).on('click', 'td.detail-control', function () {
+                                    var tr = $(this).closest('tr');
+                                    var row = tableMonth.row( tr );
+
+                                    if ( row.child.isShown() ) {
+                                        row.child.hide();
+                                        tr.removeClass('shown');
+                                    }
+                                    else {
+                                        row.child( format(row.data()) ).show();
+                                        tr.addClass('shown');
+                                    }
+                                });
+
+                                function format(a) {
+                                    let username = d.username;
+                                    let year = e.year;
+                                    let month = a.month;
+                                    let date = new Date("2000 " + month + " 1");
+                                    let monthNumber = date.getMonth();
+                                    monthNumber += 1;
+
+                                    //unique ID
+                                    let tableId = 'table_' + month;
+
+                                    let tableContent = '<table id="' + tableId + '" class="table table-bordered table-hover tabel">' +
+                                        '<thead class="thead-dark"><tr><th></th><th>Data</th><th>Hours worked</th><th>Minutes worked</th><th>Seconds worked</th></tr></thead>' +
+                                        '<tbody>';
+
+                                    let ajaxData = {
+                                        operation: 'Days',
+                                        month : monthNumber,
+                                        year: year,
+                                        username: username
+                                    };
+
+
+                                    $.ajax({
+                                        url: '../inspina/backend/actionTablee.php',
+                                        type: 'POST',
+                                        data: ajaxData,
+                                        dataType: 'json',
+                                        success: function(response) {
+
+                                            response.forEach(function(data) {
+                                                let dateObj = new Date(data.date_hyrje);
+                                                let day = dateObj.getDate();
+                                                let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                                                let monthIndex = dateObj.getMonth();
+                                                let monthName = monthNames[monthIndex];
+                                                let formattedDate = day + ' ' + monthName;
+                                                tableContent += '<tr><td></td><td>' + formattedDate + '</td><td>' + data.hours + '</td><td>' + data.minutes + '</td><td>' + data.seconds + '</td></tr>';
+                                            });
+                                            tableContent += '</tbody></table>';
+                                            // Show the table inside the row
+                                            $('#' + tableId + '_placeholder').html(tableContent).show(); // Show the content after updating
+
+                                            let tableDays = new DataTable('#' + tableId, {
+
+                                                "paging": false,
+                                                "searching": false,
+                                                "processing": true,
+
+                                                columns: [
+                                                    {
+                                                        className: 'det-control',
+                                                        orderable: false,
+                                                        data: null,
+                                                        defaultContent: ''
+                                                    },
+                                                    { data: 'data'},
+                                                    { data: 'hours' },
+                                                    { data: 'minutes' },
+                                                    { data: 'seconds' }
+                                                ],
+
+                                                order: {
+                                                    data: 'data',
+                                                    dir: 'asc'
+                                                }
+                                            });
+
+                                            $('#' + tableId).on('click', 'td.det-control', function () {
+                                                var tr = $(this).closest('tr');
+                                                var row = tableDays.row( tr );
+
+                                                if ( row.child.isShown() ) {
+                                                    row.child.hide();
+                                                    tr.removeClass('shown');
+                                                }
+                                                else {
+                                                    row.child( format(row.data()) ).show();
+                                                    tr.addClass('shown');
+                                                }
+                                            });
+
+                                            function format(b) {
+                                                let username = d.username;
+                                                let year = e.year;
+                                                let monthName = a.month;
+                                                let date = new Date("2000 " + monthName + " 1");
+                                                let month = date.getMonth();
+                                                month += 1;
+
+                                                let dateStr = b.data;
+                                                let parts = dateStr.split(' ');
+                                                let day = parts[0];
+
+
+                                                //unique ID
+                                                let tableId = 'table_' + day;
+
+                                                let tableContent = '<table id="' + tableId + '" class="table table-bordered table-hover tabelaLast">' +
+                                                    '<thead class="thead-dark"><tr><th>Entered</th><th>Left</th><th>Difference</th></tr></thead>' +
+                                                    '<tbody>';
+
+                                                let ajaxData = {
+                                                    operation: 'Hours',
+                                                    month : month,
+                                                    year: year,
+                                                    day : day,
+                                                    username: username
+                                                };
+
+
+                                                $.ajax({
+                                                    url: '../inspina/backend/actionTablee.php',
+                                                    type: 'POST',
+                                                    data: ajaxData,
+                                                    dataType: 'json',
+                                                    success: function(response) {
+
+                                                        response.forEach(function(data) {
+                                                            tableContent += '<tr><td>' + data.ora_hyrje + '</td><td>' + data.ora_dalje + '</td><td>' + data.difference + '</td></tr>';
+                                                        });
+                                                        tableContent += '</tbody></table>';
+                                                        // Show the table inside the row
+                                                        $('#' + tableId + '_placeholder').html(tableContent).show(); // Show the content after updating
+
+                                                        let tableHours = new DataTable('#' + tableId, {
+
+                                                            "paging": false,
+                                                            "searching": false,
+                                                            "processing": true,
+                                                            "info": false,
+
+                                                            columns: [
+                                                                { data: 'entered' },
+                                                                { data: 'left' },
+                                                                { data: 'difference'}
+                                                            ],
+
+                                                            order: {
+                                                                data: 'entered',
+                                                                dir: 'asc'
+                                                            }
+                                                        });
+
+                                                    },
+                                                    error: function(xhr, status, error) {
+                                                        console.error(xhr);
+                                                        console.error(status);
+                                                        console.error(error);
+                                                        $('#' + tableId + '_placeholder').html('Error fetching years.');
+                                                    }
+
+                                                });
+
+                                                // Create a placeholder for the table
+                                                let placeholderContent = '<div id="' + tableId + '_placeholder">Loading results...</div>';
+                                                return placeholderContent;
+                                            }
+
+
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error(xhr);
+                                            console.error(status);
+                                            console.error(error);
+                                            $('#' + tableId + '_placeholder').html('Error fetching years.');
+                                        }
+
+                                    });
+
+                                    // Create a placeholder for the table
+                                    let placeholderContent = '<div id="' + tableId + '_placeholder">Loading results...</div>';
+                                    return placeholderContent;
+                                }
+
 
                             },
                             error: function(xhr, status, error) {

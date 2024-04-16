@@ -318,6 +318,145 @@ if(isset($_POST['operation'])){
         $year = $_POST['year'];
 
         $sql="WITH difference_in_seconds AS (
+        SELECT
+            id,
+            username,
+            data_hyrje,
+            ora_hyrje,
+            CASE WHEN ora_dalje = '00:00:00' THEN '24:00:00' ELSE ora_dalje END AS ora_dalje_adjusted,
+            CASE
+                WHEN ora_dalje = '00:00:00' THEN
+                    TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        TIMESTAMPADD(DAY, 1, ora_dalje)
+                    )
+                ELSE
+                    TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        ora_dalje
+                    )
+            END AS seconds
+        FROM hyrje_dalje_kryesore
+    ),
+    summed_differences AS (
+        SELECT
+            username,
+            YEAR(data_hyrje) AS year,
+            MONTH(data_hyrje) AS month,
+            SUM(seconds) AS total_seconds
+        FROM difference_in_seconds
+        WHERE username = '$username' AND YEAR(data_hyrje) = '$year'
+        GROUP BY username, YEAR(data_hyrje), MONTH(data_hyrje)
+    )
+
+SELECT
+    year,
+    month,
+    FLOOR(SUM(total_seconds) / 3600) AS hours,
+    FLOOR((SUM(total_seconds) % 3600) / 60) AS minutes,
+    SUM(total_seconds) % 60 AS seconds
+FROM summed_differences
+GROUP BY year, month;";
+
+
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $data = array();
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
+            /*            echo "<pre>";
+                        print_r($data);
+                        echo "</pre>";*/
+            echo json_encode($data);
+        } else {
+            echo json_encode(array());
+        }
+
+    }
+    if($_POST['operation'] == "Days") {
+
+        $username = $_POST['username'];
+        $year = $_POST['year'];
+        $month = $_POST['month'];
+        $nextMonth = $month +1;
+
+        $sql="WITH difference_in_seconds AS (
+                SELECT
+                id,
+                username,
+                data_hyrje,
+                ora_hyrje,
+                CASE WHEN ora_dalje = '00:00:00' THEN '24:00:00' ELSE ora_dalje END AS ora_dalje_adjusted,
+                CASE
+                WHEN ora_dalje = '00:00:00' THEN
+                TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        TIMESTAMPADD(DAY, 1, ora_dalje)
+                )
+                ELSE
+                TIMESTAMPDIFF(
+                        SECOND,
+                        ora_hyrje,
+                        ora_dalje
+                )
+                END AS seconds
+                FROM hyrje_dalje_kryesore
+                ),
+
+                summed_differences AS (
+                    SELECT
+                            username,
+                            DATE(data_hyrje) AS date_hyrje,
+                            SUM(seconds) AS total_seconds
+                    FROM difference_in_seconds
+                     WHERE username = '$username'
+                        AND YEAR(data_hyrje) = '$year'
+                        AND MONTH(data_hyrje) >= '$month'
+                        AND MONTH(data_hyrje) < '$nextMonth'
+                     GROUP BY username, date_hyrje
+                )
+
+            SELECT
+                date_hyrje,
+                FLOOR(SUM(total_seconds) / 3600) as hours,
+                FLOOR((SUM(total_seconds) % 3600) / 60) as minutes,
+                SUM(total_seconds) % 60 as seconds
+            FROM summed_differences
+            GROUP BY date_hyrje;";
+
+
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $data = array();
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
+            /*            echo "<pre>";
+                        print_r($data);
+                        echo "</pre>";*/
+            echo json_encode($data);
+        } else {
+            echo json_encode(array());
+        }
+
+    }
+
+    if($_POST['operation'] == "Hours") {
+
+        $username = $_POST['username'];
+        $year = $_POST['year'];
+        $month = $_POST['month'];
+        $nextMonth = $month +1;
+        $day = $_POST['day'];
+
+
+        $sql="WITH difference_in_seconds AS (
     SELECT
         id,
         username,
@@ -341,30 +480,38 @@ if(isset($_POST['operation'])){
     FROM hyrje_dalje_kryesore
 ),
 
-     summed_differences AS (
+     differences AS (
          SELECT
+             id,
              username,
-             YEAR(data_hyrje) AS year,
-             MONTH(data_hyrje) AS month,
-             SUM(seconds) AS total_seconds
+             data_hyrje,
+             ora_hyrje,
+             ora_dalje_adjusted AS ora_dalje,
+             seconds,
+             MOD(seconds, 60) AS seconds_part,
+             MOD(seconds, 3600) AS minutes_part,
+             MOD(seconds, 3600 * 24) AS hours_part
          FROM difference_in_seconds
-         WHERE username = '$username' AND year = '$year'
-         GROUP BY username, YEAR(data_hyrje), MONTH(data_hyrje)
      )
 
 SELECT
-    year,
-    month,
-    FLOOR(SUM(total_seconds) / 3600) as hours,
-    FLOOR((SUM(total_seconds) % 3600) / 60) as minutes,
-    SUM(total_seconds) % 60 as seconds
-FROM summed_differences
-GROUP BY year, month;";
-        /*
-                $sql = "SELECT DISTINCT YEAR(hdk.data_hyrje) AS work_year
-                        FROM hyrje_dalje_kryesore hdk
-                        JOIN users u ON hdk.username = u.user_username
-                        WHERE u.user_username = '$username'";*/
+    id,
+    data_hyrje,
+    ora_hyrje,
+    ora_dalje,
+    CONCAT(
+            FLOOR(hours_part / 3600), ' hours ',
+            FLOOR(minutes_part / 60), ' minutes ',
+            seconds_part, ' seconds'
+    ) AS difference
+FROM differences
+WHERE
+    YEAR(data_hyrje) = '$year'
+  AND MONTH(data_hyrje) = '$month'
+  AND DAY(data_hyrje) = '$day'
+  AND username = '$username';";
+
+
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
@@ -382,8 +529,7 @@ GROUP BY year, month;";
 
     }
 
-
-    }
+}
 
 
 
